@@ -5,7 +5,8 @@ import java.util.List;
 public class MyOrder {
 	
 	private String transactionId,orderNumber, orderDate, orderDeliveryNote, orderDeliveryMode, paymentMode,
-	        orderDeliverBy,orderPaymentStatus,orderReason,ordCouponId,shopCode,shopName,shopMobile,shopAddress,custCode,custName,
+	        orderDeliverBy,orderPaymentStatus,orderReason,ordCouponId,shopCode,shopName,shopMobile,shopAddress,
+	        custCode,custName,custUserCreateStatus,
 	        deliveryAddress, pinCode, 
 	        createdBy, updateBy, createdDate, 
 			updatedDate, orderStatus,prodIds,orderImage,mobileNo,dbName,dbPassword,dbUserName;
@@ -18,6 +19,12 @@ public class MyOrder {
 	
 	
 	
+	public String getCustUserCreateStatus() {
+		return custUserCreateStatus;
+	}
+	public void setCustUserCreateStatus(String custUserCreateStatus) {
+		this.custUserCreateStatus = custUserCreateStatus;
+	}
 	public String getTransactionId() {
 		return transactionId;
 	}

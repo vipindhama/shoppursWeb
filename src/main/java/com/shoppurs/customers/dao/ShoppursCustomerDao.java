@@ -25,6 +25,7 @@ import com.google.zxing.WriterException;
 import com.google.zxing.client.j2se.MatrixToImageWriter;
 import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.QRCodeWriter;
+import com.shoppurs.connection.DaoConnection;
 import com.shoppurs.customers.controller.CustomerApiController;
 import com.shoppurs.customers.mapper.CategoryMapper;
 import com.shoppurs.customers.mapper.CustomerMapper;
@@ -81,7 +82,7 @@ public class ShoppursCustomerDao {
 	 */
 	
 	public String manageRegistration(MyUser myUser) {
-		String query = "{ call customer_registration(?,?,?,?,?,?,?,?,?,?,?) }";
+		String query = "{ call customer_registration(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?) }";
 	    ResultSet rs;
 	    
 	    int status = 0;
@@ -94,16 +95,23 @@ public class ShoppursCustomerDao {
 	    	stmt.setString(2, myUser.getUser_email());
 	    	stmt.setString(3, myUser.getMobile());
 	    	stmt.setString(4, myUser.getMpassword());
-	    	stmt.setString(5, myUser.getPhoto());
-	    	stmt.setString(6, myUser.getUser_type());
-	    	stmt.setString(7, myUser.getCreated_by());
-	    	stmt.setString(8, myUser.getUpdated_by());
-	    	stmt.setInt(9, myUser.getAction());
+	    	stmt.setString(5, myUser.getCity());
+	    	stmt.setString(6, myUser.getProvince());
+	    	stmt.setString(7, myUser.getCountry());
+	    	stmt.setString(8, myUser.getZip());
+	    	stmt.setString(9, myUser.getAddress());
+	    	stmt.setString(10, myUser.getPhoto());
+	    	stmt.setString(11, myUser.getUserLat());
+	    	stmt.setString(12, myUser.getUserLong());
+	    	stmt.setString(13, myUser.getUser_type());
+	    	stmt.setString(14, myUser.getCreated_by());
+	    	stmt.setString(15, myUser.getUpdated_by());
+	    	stmt.setInt(16, myUser.getAction());
 	    
 	    	
 	    	//stmt.setInt(10, 1);
-	    	stmt.registerOutParameter(10, java.sql.Types.INTEGER);
-	    	stmt.registerOutParameter(11, java.sql.Types.VARCHAR);
+	    	stmt.registerOutParameter(17, java.sql.Types.INTEGER);
+	    	stmt.registerOutParameter(18, java.sql.Types.VARCHAR);
 	        stmt.execute();
 	       // rs = stmt.getResultSet();
 	        status = stmt.getInt(10);
@@ -473,7 +481,7 @@ private void generateQRCodeImage(String text, int width, int height, String file
 	
 	private JdbcTemplate getDynamicDataSource(String dbName,String dbUserName,String dbPassword) {
 		dynamicDataSource.setDriverClassName("com.mysql.cj.jdbc.Driver");
-		dynamicDataSource.setUrl("jdbc:mysql://49.50.77.154:3306/"+dbName);
+		dynamicDataSource.setUrl("jdbc:mysql://"+DaoConnection.BASE_URL+":3306/"+dbName);
 		dynamicDataSource.setUserName(dbUserName);
 		dynamicDataSource.setPassword(dbPassword);
 		DriverManagerDataSource dataSource = new DriverManagerDataSource();

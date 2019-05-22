@@ -329,10 +329,11 @@ public class OrderDao {
 			
 			custCode = myorder.getCustCode();
 			Customer customer = null;
-			if(custCode == null || custCode.equals("")) {
-				
+			sql="SELECT * FROM CUSTOMER_INFO where CUST_CODE = ?";
+			if(myorder.getCustUserCreateStatus().equals("S")) {
+				customer = dynamicShopJdbc.query(sql,new RetCustomerMapper(),custCode).get(0);
 			}else {
-				sql="SELECT * FROM CUSTOMER_INFO where CUST_CODE = ?";
+			
 				JdbcTemplate customerJdbc = daoConnection.getDynamicDataSource(DaoConnection.CUSTOMER_DB_NAME,
 						myorder.getDbUserName(),myorder.getDbPassword());
 				customer = customerJdbc.query(sql,new CustomerMapper(),myorder.getCustCode()).get(0);
@@ -512,11 +513,12 @@ public class OrderDao {
             invoice.setInvShopAddress(myShop.getRetaddress());
             invoice.setInvShopEmail(myShop.getRetemail());
             invoice.setInvShopMobile(myShop.getRetmobile());
-            invoice.setInvShopGSTIn(myShop.getRetGstIn());
+            invoice.setInvShopGSTIn(myShop.getRetGstIn());           
             invoice.setInvCustId(customer.getId());
+            invoice.setCustUserCreateStatus(item.getCustUserCreateStatus());
             invoice.setCustCode(custCode);
             invoice.setInvCustName(myorder.getCustName());
-            invoice.setInvCustMobile(customer.getMobileNo());
+            invoice.setInvCustMobile(myorder.getMobileNo());
             invoice.setInvTotCGST(totCgst);
             invoice.setInvTotSGST(totSgst);
             invoice.setInvTotIGST(totIgst);
@@ -640,7 +642,7 @@ public class OrderDao {
 				sql="SELECT INVM_ID  FROM invoice_master where INVM_NO = ?";
 				int invshopId = dynamicShopJdbc.queryForObject(sql, Integer.class,item.getInvNo());
 				int invcustId = 0;
-	            if(item.getCustCode() != null && !item.getCustCode().equals("")) {
+	            if(!item.getCustUserCreateStatus().equals("S")) {
 					
 					sql="SELECT * FROM CUSTOMER_INFO where CUST_CODE = ?";
 					JdbcTemplate customerJdbc = daoConnection.getDynamicDataSource(DaoConnection.CUSTOMER_DB_NAME,

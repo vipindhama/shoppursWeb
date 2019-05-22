@@ -4,7 +4,7 @@ public class Customer {
 
 	private int id;
 	private String code,name,mobileNo,isFav,address,pin,email,photo,
-	password,country,state,city,userType,
+	password,country,state,city,userType,userCreateStatus,
 	ip,dbName,dbUserName,dbPassword,panNo,aadharNo,gstNo,createdBy,updatedBy,createdDate,updatedDate;
 	
 	private int isActive;
@@ -12,6 +12,14 @@ public class Customer {
 	private float ratings;
 	
 	
+
+	public String getUserCreateStatus() {
+		return userCreateStatus;
+	}
+
+	public void setUserCreateStatus(String userCreateStatus) {
+		this.userCreateStatus = userCreateStatus;
+	}
 
 	public String getIsFav() {
 		return isFav;

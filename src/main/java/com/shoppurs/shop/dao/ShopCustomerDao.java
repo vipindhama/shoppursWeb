@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 
+import com.shoppurs.connection.DaoConnection;
 import com.shoppurs.customers.controller.CustomerApiController;
 import com.shoppurs.customers.mapper.OrderMapper;
 import com.shoppurs.customers.mapper.UserMapper;
@@ -76,12 +77,12 @@ private static final Logger log = LoggerFactory.getLogger(CustomerApiController.
 					sql="insert into customer_info (`CUST_ID`,`CUST_CODE`,`CUST_NAME`,`CUST_MOBILENO`,`CUST_EMAILID`,`PASSWORD`,"
 							+ "`CUST_PHOTO`, `CUST_ADDRESS`,`CUST_ZIP`,`CUST_PROVINCE`,`CUST_CITY`,"
 							+ "`CREATED_DATE`,`CREATED_BY`,`UPDATED_DATE`,`UPDATED_BY`,"
-							+ "`USER_TYPE`,`ISACTIVE`,`SERVER_IP`,`DB_NAME`,`DB_USERNAME`,`DB_PASSWORD`)" + 
-							" values (?,?,?,?,?,?,?,?,?,?,?,now(),?,now(),?,?,?,?,?,?,?)";
+							+ "`USER_TYPE`,`ISACTIVE`,`SERVER_IP`,`DB_NAME`,`DB_USERNAME`,`DB_PASSWORD`,`USER_CREATE_STATUS`)" + 
+							" values (?,?,?,?,?,?,?,?,?,?,?,now(),?,now(),?,?,?,?,?,?,?,?)";
 					dynamicJdbc.update(sql,customer.getId(),customer.getCode(),customer.getName(),customer.getMobileNo(),
 							customer.getEmail(),"",customer.getPhoto(),customer.getAddress(),customer.getPin(),customer.getState(),
 							customer.getCity(),customer.getCreatedBy(),customer.getUpdatedBy(),customer.getUserType(),customer.getIsActive(),
-							customer.getIp(),customer.getDbName(),customer.getDbUserName(),customer.getDbPassword());
+							customer.getIp(),customer.getDbName(),customer.getDbUserName(),customer.getDbPassword(),"C");
 					
 					log.info("Data is inserted.");
 				
@@ -101,6 +102,7 @@ private static final Logger log = LoggerFactory.getLogger(CustomerApiController.
 		//List<Customer> itemList = null;
 		String sql="SELECT COUNT(CUST_NAME) FROM customer_info where CUST_MOBILENO = ?";
 		JdbcTemplate dynamicJdbc = getDynamicDataSource(item.getDbName(),item.getDbUserName(),item.getDbPassword());
+		JdbcTemplate dynamicShoppursShopJdbc = getDynamicDataSource(DaoConnection.CUSTOMER_DB_NAME,item.getDbUserName(),item.getDbPassword());
 		String status = null;
 		try
 		   {
@@ -114,10 +116,11 @@ private static final Logger log = LoggerFactory.getLogger(CustomerApiController.
 				sql="insert into customer_info (`CUST_ID`,`CUST_CODE`,`CUST_NAME`,`CUST_MOBILENO`,`CUST_EMAILID`,`PASSWORD`,"
 						+ "`CUST_PHOTO`, `CUST_ADDRESS`,`CUST_ZIP`,`CUST_PROVINCE`,`CUST_CITY`,"
 						+ "`CREATED_DATE`,`CREATED_BY`,`UPDATED_DATE`,`UPDATED_BY`,"
-						+ "`USER_TYPE`,`ISACTIVE`,`SERVER_IP`,`DB_NAME`,`DB_USERNAME`,`DB_PASSWORD`)" + 
-						" values (?,?,?,?,?,?,?,?,?,?,?,now(),?,now(),?,?,?,?,?,?,?)";
+						+ "`USER_TYPE`,`ISACTIVE`,`SERVER_IP`,`DB_NAME`,`DB_USERNAME`,`DB_PASSWORD`,`USER_CREATE_STATUS`)" + 
+						" values (?,?,?,?,?,?,?,?,?,?,?,now(),?,now(),?,?,?,?,?,?,?,?)";
 				
-				dynamicJdbc.update(sql,count,"c"+count,item.getName(),item.getMobile(),"","","","","","","","","","Customer",1,"","","","");
+				dynamicJdbc.update(sql,count,"SHPC"+count,item.getName(),item.getMobile(),"","","","","","","","","","Customer",1,"","","","","S");
+				dynamicShoppursShopJdbc.update(sql,count,"SHPC"+count,item.getName(),item.getMobile(),"","","","","","","","","","Customer",1,"","","","","S");
 				status = "success";
 			}else {
 				status = "Customer is already registered";
@@ -209,7 +212,7 @@ private static final Logger log = LoggerFactory.getLogger(CustomerApiController.
 	
 	private JdbcTemplate getDynamicDataSource(String dbName,String dbUserName,String dbPassword) {
 		dynamicDataSource.setDriverClassName("com.mysql.cj.jdbc.Driver");
-		dynamicDataSource.setUrl("jdbc:mysql://49.50.77.154:3306/"+dbName);
+		dynamicDataSource.setUrl("jdbc:mysql://"+DaoConnection.BASE_URL+":3306/"+dbName);
 		dynamicDataSource.setUserName(dbUserName);
 		dynamicDataSource.setPassword(dbPassword);
 		DriverManagerDataSource dataSource = new DriverManagerDataSource();

@@ -1,12 +1,68 @@
 package com.shoppurs.customers.model;
 
 public class MyUser {
-	private String userid,username, user_email, mobile, mpassword, photo, user_type, 
-	 dbname, dbusername, dbpassword,
-	 created_by, updated_by, message;
+	private String userid,username, user_email, mobile, mpassword, photo, user_type,city,province,country,
+    zip,address,dbname, dbusername, dbpassword,created_by, updated_by, message,userLat,userLong;
+	
 	 private int action, mstatus;
 	 
 	 
+
+	public String getCity() {
+		return city;
+	}
+
+	public void setCity(String city) {
+		this.city = city;
+	}
+
+	public String getProvince() {
+		return province;
+	}
+
+	public void setProvince(String province) {
+		this.province = province;
+	}
+
+	public String getCountry() {
+		return country;
+	}
+
+	public void setCountry(String country) {
+		this.country = country;
+	}
+
+	public String getZip() {
+		return zip;
+	}
+
+	public void setZip(String zip) {
+		this.zip = zip;
+	}
+
+	public String getAddress() {
+		return address;
+	}
+
+	public void setAddress(String address) {
+		this.address = address;
+	}
+
+	public String getUserLat() {
+		return userLat;
+	}
+
+	public void setUserLat(String userLat) {
+		this.userLat = userLat;
+	}
+
+	public String getUserLong() {
+		return userLong;
+	}
+
+	public void setUserLong(String userLong) {
+		this.userLong = userLong;
+	}
 
 	public String getUserid() {
 		return userid;

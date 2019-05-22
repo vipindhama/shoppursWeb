@@ -40,7 +40,7 @@ public class RetCustomerMapper implements RowMapper<Customer> {
 		customer.setDbName(rs.getString("DB_NAME"));
 		customer.setDbUserName(rs.getString("DB_USERNAME"));
 		customer.setDbPassword(rs.getString("DB_PASSWORD"));
-		
+		customer.setUserCreateStatus(rs.getString("USER_CREATE_STATUS"));
 		
 		return customer;
 	}

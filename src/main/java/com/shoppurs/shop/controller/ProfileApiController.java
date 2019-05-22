@@ -56,7 +56,7 @@ public class ProfileApiController {
 				public MyResponse updateDeliveryStatus(@RequestBody DeliveryStatusReq item) {
 					String status = profileDao.updateDeliveryStatus(item);
 					if(status.equals("success")) {
-						return generateResponse(true,"Delivery status updated successfully.",null);
+						return generateResponse(true,"Delivery status updated successfully.",item);
 						
 					}else if(status.equals("error")) {
 						return generateResponse(true,"There is some problem in updating delivery status.",null);				

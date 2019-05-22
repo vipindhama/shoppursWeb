@@ -5,7 +5,7 @@ import java.util.List;
 public class Invoice {
 	
 	private int invId,invShopId,invCustId;
-	private String userName,custCode,invNo,invTransId,invDate,invShopCode,invShopName,invShopAddress,invShopEmail,invShopMobile,invShopGSTIn,
+	private String userName,custCode,custUserCreateStatus,invNo,invTransId,invDate,invShopCode,invShopName,invShopAddress,invShopEmail,invShopMobile,invShopGSTIn,
 	invCustName,invCustMobile,invStatus,invCoupenId,invPaymentMode,dbName,dbPassword,dbUserName;
 	
 	private float invTotCGST,invTotSGST,invTotIGST,invTotDisAmount,invTotTaxAmount,invTotAmount,invTotNetPayable;
@@ -23,6 +23,14 @@ public class Invoice {
 	}
 	
 	
+
+	public String getCustUserCreateStatus() {
+		return custUserCreateStatus;
+	}
+
+	public void setCustUserCreateStatus(String custUserCreateStatus) {
+		this.custUserCreateStatus = custUserCreateStatus;
+	}
 
 	public String getCustCode() {
 		return custCode;

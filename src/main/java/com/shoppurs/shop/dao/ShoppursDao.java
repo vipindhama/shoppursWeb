@@ -209,7 +209,7 @@ public List<SimpleItem> getCityList(int stateId) {
 	
 	private JdbcTemplate getDynamicDataSource(String dbName,String dbUserName,String dbPassword) {
 		myDataSource.setDriverClassName("com.mysql.cj.jdbc.Driver");
-		myDataSource.setUrl("jdbc:mysql://49.50.77.154:3306/"+dbName);
+		myDataSource.setUrl("jdbc:mysql://49.50.77.85:3306/"+dbName);
 		//myDataSource.setUrl("jdbc:mysql://localhost:3306/"+dbName);
 		myDataSource.setUserName(dbUserName);
 		myDataSource.setPassword(dbPassword);

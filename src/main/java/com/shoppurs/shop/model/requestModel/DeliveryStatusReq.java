@@ -2,11 +2,23 @@ package com.shoppurs.shop.model.requestModel;
 
 public class DeliveryStatusReq {
 
-	private int id,amount;
+	private int id,amount,time,distance;
 	private String mobile,deliveryStatus,dbName,dbPassword,dbUserName;
 	
 	
 	
+	public int getTime() {
+		return time;
+	}
+	public void setTime(int time) {
+		this.time = time;
+	}
+	public int getDistance() {
+		return distance;
+	}
+	public void setDistance(int distance) {
+		this.distance = distance;
+	}
 	public String getMobile() {
 		return mobile;
 	}

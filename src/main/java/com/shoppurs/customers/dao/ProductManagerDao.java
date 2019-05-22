@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 
+import com.shoppurs.connection.DaoConnection;
 import com.shoppurs.customers.mapper.MyShopMapper;
 import com.shoppurs.customers.model.MyShop;
 import com.shoppurs.shop.controller.ShoppursApiController;
@@ -113,7 +114,7 @@ public class ProductManagerDao {
 	
 	private JdbcTemplate getDynamicDataSource(String dbName,String dbUserName,String dbPassword) {
 		myDataSource.setDriverClassName("com.mysql.cj.jdbc.Driver");
-		myDataSource.setUrl("jdbc:mysql://49.50.77.154:3306/"+dbName);
+		myDataSource.setUrl("jdbc:mysql://"+DaoConnection.BASE_URL+":3306/"+dbName);
 		//myDataSource.setUrl("jdbc:mysql://localhost:3306/"+dbName);
 		myDataSource.setUserName(dbUserName);
 		myDataSource.setPassword(dbPassword);

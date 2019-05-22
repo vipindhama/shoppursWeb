@@ -33,6 +33,12 @@ public class CustomerMapper implements RowMapper<Customer> {
 		customer.setDbUserName(rs.getString(20));
 		customer.setDbPassword(rs.getString(21));
 		
+		try {
+			customer.setUserCreateStatus(rs.getString("USER_CREATE_STATUS"));
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
+		
 		return customer;
 	}
 

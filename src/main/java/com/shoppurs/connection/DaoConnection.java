@@ -18,6 +18,7 @@ public class DaoConnection {
 	
 	public static final String SHOPPURS_SHOP_DB_NAME = "SHP1";
 	public static final String SHOPPURS_SHOP_CODE = "SHP1";
+	public static final String BASE_URL = "49.50.77.154";
 	
 	@Autowired
     private MyDataSource dynamicDataSource;
@@ -25,7 +26,7 @@ public class DaoConnection {
 	
 	public JdbcTemplate getDynamicDataSource(String dbName,String dbUserName,String dbPassword) {
 		dynamicDataSource.setDriverClassName("com.mysql.cj.jdbc.Driver");
-		dynamicDataSource.setUrl("jdbc:mysql://49.50.77.154:3306/"+dbName);
+		dynamicDataSource.setUrl("jdbc:mysql://"+DaoConnection.BASE_URL+":3306/"+dbName);
 		dynamicDataSource.setUserName(dbUserName);
 		dynamicDataSource.setPassword(dbPassword);
 		DriverManagerDataSource dataSource = new DriverManagerDataSource();
