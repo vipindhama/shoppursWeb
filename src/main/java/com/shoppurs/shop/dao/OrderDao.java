@@ -748,14 +748,36 @@ public class OrderDao {
 		return itemList;
 	}
 	
+	public List<MyOrder> getShopCustomerOrder(UserID item) {
+		List<MyOrder> itemList = null;
+		JdbcTemplate dynamicJdbc = daoConnection.getDynamicDataSource(item.getDbName(),item.getDbUserName(),item.getDbPassword());
+		String sql="SELECT co.*,cod.ORD_STATUS,cod.ORD_REASON,cod.ORD_PAYMENT_STATUS FROM CUST_ORDER as co,CUST_ORDER_DETAILS as cod "
+				+ "WHERE co.ORD_ID = cod.ORD_ORD_ID AND co.ORD_CUST_CODE != ?"
+				+ " GROUP BY co.ORD_ID ORDER BY co.ORD_DATE DESC LIMIT ? OFFSET ?";
+		try {
+			itemList = dynamicJdbc.query(sql,new OrderMapper(),item.getCode(),item.getLimit(),item.getOffset());
+		}catch(Exception e) {
+			e.printStackTrace();
+		}finally {
+	    	try {
+				dynamicJdbc.getDataSource().getConnection().close();
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+	    }
+		
+		return itemList;
+	}
+	
 	public List<MyOrder> getShopOrder(UserID item) {
 		List<MyOrder> itemList = null;
 		JdbcTemplate dynamicJdbc = daoConnection.getDynamicDataSource(item.getDbName(),item.getDbUserName(),item.getDbPassword());
 		String sql="SELECT co.*,cod.ORD_STATUS,cod.ORD_REASON,cod.ORD_PAYMENT_STATUS FROM CUST_ORDER as co,CUST_ORDER_DETAILS as cod "
-				+ "WHERE co.ORD_ID = cod.ORD_ORD_ID"
+				+ "WHERE co.ORD_ID = cod.ORD_ORD_ID AND co.ORD_CUST_CODE = ?"
 				+ " GROUP BY co.ORD_ID ORDER BY co.ORD_DATE DESC LIMIT ? OFFSET ?";
 		try {
-			itemList = dynamicJdbc.query(sql,new OrderMapper(),item.getLimit(),item.getOffset());
+			itemList = dynamicJdbc.query(sql,new OrderMapper(),item.getCode(),item.getLimit(),item.getOffset());
 		}catch(Exception e) {
 			e.printStackTrace();
 		}finally {

@@ -10,6 +10,8 @@ import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import org.apache.tomcat.util.codec.binary.Base64;
@@ -29,13 +31,18 @@ import com.shoppurs.connection.DaoConnection;
 import com.shoppurs.shop.controller.ShoppursApiController;
 import com.shoppurs.shop.mapper.DbUserMapper;
 import com.shoppurs.shop.mapper.MyUserMapper;
+import com.shoppurs.shop.mapper.ProductSaleMapper;
+import com.shoppurs.shop.mapper.ShopCustomerSaleMapper;
 import com.shoppurs.shop.model.Customer;
 import com.shoppurs.shop.model.DbUser;
 import com.shoppurs.shop.model.MyBank;
 import com.shoppurs.shop.model.MyDataSource;
 import com.shoppurs.shop.model.MyUser;
+import com.shoppurs.shop.model.ProductSaleObject;
+import com.shoppurs.shop.model.ShopCustomerSaleData;
 import com.shoppurs.shop.model.UserID;
 import com.shoppurs.shop.model.UserLogin;
+import com.shoppurs.shop.model.requestModel.ShopSaleReq;
 import com.shoppurs.shop.model.requestModel.UserDetailsReq;
 import com.shoppurs.utilities.Constants;
 
@@ -331,6 +338,32 @@ public MyUser getUserDetailsWithMobile(UserDetailsReq item) {
 		   log.info("Exception "+e.toString());
 		     return null;
 	    }
+}
+
+public HashMap<String,Object> getShopSaleData(ShopSaleReq item) {
+	List<ShopCustomerSaleData> itemCustomerSaleList = null;
+	HashMap<String,Object> hashMap = new HashMap();
+	List<ProductSaleObject> itemMonthlySaleList = null;
+	String sql="SELECT so.INVM_DATE,sum(sod.INVD_QTY),sum(sod.INVD_TAMOUNT) FROM invoice_master as so, invoice_detail as sod " + 
+			" where so.INVM_ID = sod.INVD_INVM_ID and so.INVM_DATE BETWEEN  ? AND ? AND so.INVM_STATUS = 'Generated' group by month(so.INVM_DATE)";
+	
+	String sqlCustomerData="SELECT INVM_ID,INVM_DATE,INVM_CUST_NAME,INVM_TOT_NET_PAYABLE FROM invoice_master WHERE "
+			+ "INVM_DATE BETWEEN  ? AND ? AND INVM_STATUS = 'Generated'";
+	
+	JdbcTemplate dynamicJdbc = daoConnection.getDynamicDataSource(item.getDbName(),item.getDbUserName(),item.getDbPassword());
+	
+	try
+	   {
+		itemMonthlySaleList=dynamicJdbc.query(sql,new ProductSaleMapper(),item.getFromDate(),item.getToDate());
+		itemCustomerSaleList=dynamicJdbc.query(sqlCustomerData,new ShopCustomerSaleMapper(),item.getFromDate(),item.getToDate());
+		hashMap.put("monthlyGraphData", itemMonthlySaleList);
+	     hashMap.put("customerSaleData", itemCustomerSaleList);
+	   }catch(Exception e)
+	     {
+		   log.info("Exception "+e.toString());
+	    }
+	
+	return hashMap;
 }
 
 private void generateQRCodeImage(String text, int width, int height, String filePath)

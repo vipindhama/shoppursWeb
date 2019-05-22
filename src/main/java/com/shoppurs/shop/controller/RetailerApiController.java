@@ -1,5 +1,7 @@
 package com.shoppurs.shop.controller;
 
+import java.util.HashMap;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -14,6 +16,7 @@ import com.shoppurs.shop.model.MyBank;
 import com.shoppurs.shop.model.MyResponse;
 import com.shoppurs.shop.model.MyUser;
 import com.shoppurs.shop.model.UserLogin;
+import com.shoppurs.shop.model.requestModel.ShopSaleReq;
 import com.shoppurs.shop.model.requestModel.UserDetailsReq;
 
 @RestController("/api/user")
@@ -99,7 +102,18 @@ public class RetailerApiController {
     	MyUser myUser = retailerDao.getUserDetails(item);
     	return generateResponse(true,"Profile fetched successfuly",myUser);
     	
-    }      
+    }  
+    
+//API to get shop sale data
+    
+    @RequestMapping("/api/user/shop_sale_data")
+    public MyResponse getShopSaleData(@RequestBody ShopSaleReq item) {
+    	
+    	HashMap<String,Object> response = retailerDao.getShopSaleData(item);
+    	return generateResponse(true,"Sale data fetched successfuly",response);
+    	
+    }  
+    
     
 //This method generates response body
     

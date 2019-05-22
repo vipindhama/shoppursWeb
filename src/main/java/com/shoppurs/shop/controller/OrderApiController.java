@@ -62,8 +62,8 @@ public class OrderApiController {
     }  
     
     @RequestMapping("/api/shop/order/get_order")
-	public MyResponse getCustomerOrder(@RequestBody UserID item) {
-		List<MyOrder> itemList =  orderDao.getShopOrder(item);
+	public MyResponse getShopCustomerOrder(@RequestBody UserID item) {
+		List<MyOrder> itemList =  orderDao.getShopCustomerOrder(item);
 		
 		if(itemList != null) {
 			return generateResponse(true,"Orders Fetched successfully.",itemList);
@@ -72,6 +72,18 @@ public class OrderApiController {
 			return generateResponse(false,"There is some problem in fetching orders.",null);				
 		}
 	}
+    
+    @RequestMapping("/api/shop/order/get_cust_order")
+   	public MyResponse getShopOrder(@RequestBody UserID item) {
+   		List<MyOrder> itemList =  orderDao.getShopOrder(item);
+   		
+   		if(itemList != null) {
+   			return generateResponse(true,"Orders Fetched successfully.",itemList);
+   		}
+   		else {
+   			return generateResponse(false,"There is some problem in fetching orders.",null);				
+   		}
+   	}
     
     @RequestMapping("/api/shop/order/get_pending_order")
    	public MyResponse getPendingCustomerOrder(@RequestBody UserID item) {
