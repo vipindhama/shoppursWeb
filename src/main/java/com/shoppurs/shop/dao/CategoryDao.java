@@ -417,12 +417,16 @@ public String deleteCategory(DelCategory item) {
 			item.getDbUserName(),item.getDbPassword());
 	
 	String sql="UPDATE ret_category SET DEL_STATUS = 'Y' where CATEGORY_ID=?";
+	String sqlSubCat="UPDATE ret_sub_category SET DEL_STATUS = 'Y' where SUB_CATEGORY_CAT_ID=?";
+	String sqlProd="UPDATE ret_product SET DEL_STATUS = 'Y' where PROD_CAT_ID=?";
 	
 	try {
 		String[] catIds = item.getCatIds().split(",");
 		for(int i = 0; i< catIds.length; i++) {
 			log.info("catID "+Integer.parseInt(catIds[i]));
 			jdbcTemplate.update(sql,Integer.parseInt(catIds[i]));
+			jdbcTemplate.update(sqlSubCat,Integer.parseInt(catIds[i]));
+			jdbcTemplate.update(sqlProd,Integer.parseInt(catIds[i]));
 		}
 		
 		status = "success";
@@ -433,5 +437,31 @@ public String deleteCategory(DelCategory item) {
 	
    return status;
 }
+
+public String deleteSubCategory(DelCategory item) {
+	   String status = "failure";
+	   
+	   JdbcTemplate jdbcTemplate = daoConnection.getDynamicDataSource(item.getDbName(),
+				item.getDbUserName(),item.getDbPassword());
+		
+		String sqlSubCat="UPDATE ret_sub_category SET DEL_STATUS = 'Y' where SUB_CATEGORY_ID=?";
+		String sqlProd="UPDATE ret_product SET DEL_STATUS = 'Y' where PROD_SUB_CAT_ID=?";
+		
+		try {
+			String[] catIds = item.getCatIds().split(",");
+			for(int i = 0; i< catIds.length; i++) {
+				log.info("catID "+Integer.parseInt(catIds[i]));
+				jdbcTemplate.update(sqlSubCat,Integer.parseInt(catIds[i]));
+				jdbcTemplate.update(sqlProd,Integer.parseInt(catIds[i]));
+			}
+			
+			status = "success";
+		}catch(Exception e) {
+			e.printStackTrace();
+			status = "error";
+		}
+		
+	   return status;
+	}
 
 }
