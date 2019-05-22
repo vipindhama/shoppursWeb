@@ -442,7 +442,7 @@ public class ProductDao {
 				}
 				
 			}else {
-				status = "Product is not exist in database.";
+				status = "Product does not exist in database.";
 			}
 			
 		}catch(Exception e) {
