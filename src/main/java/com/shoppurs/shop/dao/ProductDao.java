@@ -74,8 +74,9 @@ public class ProductDao {
         	String sql = "insert into ret_product (`PROD_ID`,`PROD_SUB_CAT_ID`,`PROD_NAME`,`PROD_CODE`," + 
         			"`PROD_DESC`,`PROD_MRP`,`PROD_SP`,`PROD_REORDER_LEVEL`,`PROD_QOH`,`PROD_HSN_CODE`,`PROD_CGST`,`PROD_IGST`," + 
         			"`PROD_SGST`,`PROD_WARRANTY`,`PROD_MFG_DATE`,`PROD_EXPIRY_DATE`,`PROD_MFG_BY`,`PROD_IMAGE_1`," + 
-        			"`PROD_IMAGE_2`,`PROD_IMAGE_3`,`CREATED_BY`,`UPDATED_BY`,`CREATED_DATE`,`UPDATED_DATE`,`DEL_STATUS`,`IS_BARCODE_AVAILABLE`) "
-        			+ "values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,now(),now(),?,?)";
+        			"`PROD_IMAGE_2`,`PROD_IMAGE_3`,`CREATED_BY`,`UPDATED_BY`,`CREATED_DATE`,`UPDATED_DATE`,"
+        			+ "`DEL_STATUS`,`IS_BARCODE_AVAILABLE`,`PROD_CAT_ID`) "
+        			+ "values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,now(),now(),?,?,?)";
         	
         	for(MyProduct item : listItem) {
         		
@@ -101,11 +102,11 @@ public class ProductDao {
     			else
     				item.setIsBarcodeAvailable("Y");	
         		 
-            	productJdbcTemplate.update(sql,prodId,item.getProdCatId(),item.getProdName(),item.getProdCode(),
+            	productJdbcTemplate.update(sql,prodId,item.getProdSubCatId(),item.getProdName(),item.getProdCode(),
             			item.getProdDesc(),item.getProdMrp(),item.getProdSp(),item.getProdReorderLevel(),item.getProdQoh(),
             			item.getProdHsnCode(),item.getProdCgst(),item.getProdIgst(),item.getProdSgst(),item.getProdWarranty(),
             			item.getProdMfgDate(),item.getProdExpiryDate(),item.getProdMfgBy(),image1,image2,image3,
-            			item.getCreatedBy(),item.getUpdatedBy(),"N",item.getIsBarcodeAvailable());
+            			item.getCreatedBy(),item.getUpdatedBy(),"N",item.getIsBarcodeAvailable(),item.getProdCatId());
             	
             	
             	

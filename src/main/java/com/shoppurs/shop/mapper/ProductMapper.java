@@ -14,7 +14,8 @@ public class ProductMapper implements RowMapper<MyProduct>{
 		MyProduct item = new MyProduct();
 		
 		item.setProdId(rs.getInt("PROD_ID"));
-		item.setProdCatId(rs.getInt("PROD_SUB_CAT_ID"));
+		item.setProdCatId(rs.getInt("PROD_CAT_ID"));
+		item.setProdSubCatId(rs.getInt("PROD_SUB_CAT_ID"));
 		item.setProdName(rs.getString("PROD_NAME"));
 		item.setProdCode(rs.getString("PROD_CODE"));
 		item.setIsBarcodeAvailable(rs.getString("IS_BARCODE_AVAILABLE"));
