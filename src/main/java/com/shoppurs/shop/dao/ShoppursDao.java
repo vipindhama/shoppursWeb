@@ -23,6 +23,8 @@ import org.springframework.jdbc.core.simple.SimpleJdbcCall;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.jdbc.datasource.init.ScriptException;
 import org.springframework.jdbc.datasource.init.ScriptUtils;
+
+import com.shoppurs.connection.DaoConnection;
 import com.shoppurs.shop.controller.ShoppursApiController;
 import com.shoppurs.shop.mapper.CategoryMapper;
 import com.shoppurs.shop.mapper.CountryMapper;
@@ -209,7 +211,7 @@ public List<SimpleItem> getCityList(int stateId) {
 	
 	private JdbcTemplate getDynamicDataSource(String dbName,String dbUserName,String dbPassword) {
 		myDataSource.setDriverClassName("com.mysql.cj.jdbc.Driver");
-		myDataSource.setUrl("jdbc:mysql://49.50.77.85:3306/"+dbName);
+		myDataSource.setUrl("jdbc:mysql://"+DaoConnection.BASE_URL+":3306/"+dbName);
 		//myDataSource.setUrl("jdbc:mysql://localhost:3306/"+dbName);
 		myDataSource.setUserName(dbUserName);
 		myDataSource.setPassword(dbPassword);

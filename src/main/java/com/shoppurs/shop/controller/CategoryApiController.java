@@ -156,13 +156,13 @@ private static final Logger log = LoggerFactory.getLogger(ShoppursApiController.
     
 //del sub category from retailer
     
-    @RequestMapping(value = "/api/categories/delete", method = RequestMethod.POST)
+    @RequestMapping(value = "/api/categories/sub_categories/delete", method = RequestMethod.POST)
     public MyResponse deleteSubCategory(@RequestBody  DelCategory item) {
     	
     	String status = categoryDao.deleteSubCategory(item);
     	
     	if(status.equals("success")) {
-    		return generateResponse(true,"Category deleted successfully.",null);
+    		return generateResponse(true,"Sub Categories deleted successfully.",null);
     	}else {
     		return generateResponse(false,status,null);
     	}
