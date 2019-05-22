@@ -22,6 +22,8 @@ import com.shoppurs.shop.model.ProductRating;
 import com.shoppurs.shop.model.ProductSaleObject;
 import com.shoppurs.shop.model.UserID;
 import com.shoppurs.shop.model.requestModel.CategoryDetailReq;
+import com.shoppurs.shop.model.requestModel.DelCategory;
+import com.shoppurs.shop.model.requestModel.DelProductReq;
 import com.shoppurs.shop.model.requestModel.ProductRatingReq;
 
 @RestController("/api/products")
@@ -151,7 +153,23 @@ public class ProductApiController {
     	ProductRating productRating = productDao.getProductRatings(item);
     	return generateResponse(true,"Product ratings fetched successfuly",productRating);
     	
-    }    
+    } 
+    
+    
+//del products from retailer
+    
+    @RequestMapping(value = "/api/products/delete", method = RequestMethod.POST)
+    public MyResponse deleteProducts(@RequestBody  DelProductReq item) {
+    	
+    	String status = productDao.deleteProducts(item);
+    	
+    	if(status.equals("success")) {
+    		return generateResponse(true,"Products deleted successfully.",null);
+    	}else {
+    		return generateResponse(false,status,null);
+    	}
+    	
+    }      
            
     
 //This method generates response body

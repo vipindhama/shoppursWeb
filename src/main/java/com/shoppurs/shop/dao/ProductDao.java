@@ -36,6 +36,8 @@ import com.shoppurs.shop.model.ProductRating;
 import com.shoppurs.shop.model.ProductSaleObject;
 import com.shoppurs.shop.model.UserID;
 import com.shoppurs.shop.model.requestModel.CategoryDetailReq;
+import com.shoppurs.shop.model.requestModel.DelCategory;
+import com.shoppurs.shop.model.requestModel.DelProductReq;
 import com.shoppurs.utilities.Constants;
 
 public class ProductDao {
@@ -615,6 +617,30 @@ public MyProduct getProductDetailsById(int prodId,String dbName,String dbUserNam
 		
 		return productRating;
 	}
+	
+	public String deleteProducts(DelProductReq item) {
+		   String status = "failure";
+		   
+		   JdbcTemplate jdbcTemplate = daoConnection.getDynamicDataSource(item.getDbName(),
+					item.getDbUserName(),item.getDbPassword());
+			
+			String sqlProd="UPDATE ret_product SET DEL_STATUS = 'Y' where PROD_SUB_CAT_ID=?";
+			
+			try {
+				String[] prodIds = item.getProdIds().split(",");
+				for(int i = 0; i< prodIds.length; i++) {
+					log.info("prodID "+Integer.parseInt(prodIds[i]));
+					jdbcTemplate.update(sqlProd,Integer.parseInt(prodIds[i]));
+				}
+				
+				status = "success";
+			}catch(Exception e) {
+				e.printStackTrace();
+				status = "error";
+			}
+			
+		   return status;
+		}
 	
 
 }
