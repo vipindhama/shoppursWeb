@@ -56,7 +56,7 @@ public class CustomerApiController {
 
 		//is customer registered
 		@RequestMapping("/api/shop_customer/register_shop_customer")
-		public MyResponse registerCustomer(@RequestBody UserID item) {
+		public MyResponse registerCustomer(@RequestBody Customer item) {
 			String status = shopCustomerDao.registerCustomer(item);
 			if(status.equals("success")) {
 				return generateResponse(true,"Customer is registered",null);

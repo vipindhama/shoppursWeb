@@ -98,7 +98,11 @@ private static final Logger log = LoggerFactory.getLogger(CustomerApiController.
 		return customer;
 	}
 	
-	public String registerCustomer(UserID item){
+	public void getCustomerDetails(Customer item) {
+		
+	}
+	
+	public String registerCustomer(Customer item){
 		//List<Customer> itemList = null;
 		String sql="SELECT COUNT(CUST_NAME) FROM customer_info where CUST_MOBILENO = ?";
 		JdbcTemplate dynamicJdbc = getDynamicDataSource(item.getDbName(),item.getDbUserName(),item.getDbPassword());
@@ -107,7 +111,7 @@ private static final Logger log = LoggerFactory.getLogger(CustomerApiController.
 		try
 		   {
 		     //itemList=dynamicJdbc.query(sql,new Object[] { item.getMobile() }, new ShopCustomerMapper());
-			int count = dynamicJdbc.queryForObject(sql,new Object[] { item.getMobile() }, Integer.class);
+			int count = dynamicJdbc.queryForObject(sql,new Object[] { item.getMobileNo() }, Integer.class);
 			if(count == 0) {
 				sql="SELECT COUNT(CUST_ID) FROM customer_info";
 				count = dynamicJdbc.queryForObject(sql, Integer.class);
@@ -119,8 +123,10 @@ private static final Logger log = LoggerFactory.getLogger(CustomerApiController.
 						+ "`USER_TYPE`,`ISACTIVE`,`SERVER_IP`,`DB_NAME`,`DB_USERNAME`,`DB_PASSWORD`,`USER_CREATE_STATUS`)" + 
 						" values (?,?,?,?,?,?,?,?,?,?,?,now(),?,now(),?,?,?,?,?,?,?,?)";
 				
-				dynamicJdbc.update(sql,count,"SHPC"+count,item.getName(),item.getMobile(),"","","","","","","","","","Customer",1,"","","","","S");
-				dynamicShoppursShopJdbc.update(sql,count,"SHPC"+count,item.getName(),item.getMobile(),"","","","","","","","","","Customer",1,"","","","","S");
+				dynamicJdbc.update(sql,count,"SHPC"+count,item.getName(),item.getMobileNo(),item.getEmail(),"","",item.getAddress(),
+						item.getPin(),"","","","","Customer",1,"","","","","S");
+				dynamicShoppursShopJdbc.update(sql,count,"SHPC"+count,item.getName(),item.getMobileNo(),item.getEmail(),
+						"","",item.getAddress(),item.getPin(),"","","","","Customer",1,"","","","","S");
 				status = "success";
 			}else {
 				status = "Customer is already registered";
