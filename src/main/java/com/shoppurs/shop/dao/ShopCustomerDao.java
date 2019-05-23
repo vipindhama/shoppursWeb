@@ -108,10 +108,19 @@ private static final Logger log = LoggerFactory.getLogger(CustomerApiController.
 		JdbcTemplate dynamicJdbc = getDynamicDataSource(item.getDbName(),item.getDbUserName(),item.getDbPassword());
 		JdbcTemplate dynamicShoppursShopJdbc = getDynamicDataSource(DaoConnection.CUSTOMER_DB_NAME,item.getDbUserName(),item.getDbPassword());
 		String status = null;
+		
+		String mobile = "";
+		
+		if(item.getMobile() == null) {
+			mobile = item.getMobileNo();
+		}else {
+			mobile = item.getMobile();
+		}
+		
 		try
 		   {
 		     //itemList=dynamicJdbc.query(sql,new Object[] { item.getMobile() }, new ShopCustomerMapper());
-			int count = dynamicJdbc.queryForObject(sql,new Object[] { item.getMobileNo() }, Integer.class);
+			int count = dynamicJdbc.queryForObject(sql,new Object[] { mobile }, Integer.class);
 			if(count == 0) {
 				sql="SELECT COUNT(CUST_ID) FROM customer_info";
 				count = dynamicJdbc.queryForObject(sql, Integer.class);
@@ -121,12 +130,14 @@ private static final Logger log = LoggerFactory.getLogger(CustomerApiController.
 						+ "`CUST_PHOTO`, `CUST_ADDRESS`,`CUST_ZIP`,`CUST_PROVINCE`,`CUST_CITY`,"
 						+ "`CREATED_DATE`,`CREATED_BY`,`UPDATED_DATE`,`UPDATED_BY`,"
 						+ "`USER_TYPE`,`ISACTIVE`,`SERVER_IP`,`DB_NAME`,`DB_USERNAME`,`DB_PASSWORD`,`USER_CREATE_STATUS`)" + 
-						" values (?,?,?,?,?,?,?,?,?,?,?,now(),?,now(),?,?,?,?,?,?,?)";
+						" values (?,?,?,?,?,?,?,?,?,?,?,now(),?,now(),?,?,?,?,?,?,?,?)";
 				
-				dynamicJdbc.update(sql,count,"SHPC"+count,item.getName(),item.getMobileNo(),item.getEmail(),"","",item.getAddress(),
-						item.getPin(),"","","","","Customer",1,"","","","","S");
-				dynamicShoppursShopJdbc.update(sql,count,"SHPC"+count,item.getName(),item.getMobileNo(),item.getEmail(),
-						"","",item.getAddress(),item.getPin(),"","","","","Customer",1,"","","","","S");
+				dynamicJdbc.update(sql,count,"SHPC"+count,item.getName(),mobile,item.getEmail(),"","",item.getAddress(),
+						item.getPin(),"","",item.getDbName(),item.getDbName(),"Customer",1,"","","","","S");
+				
+				dynamicShoppursShopJdbc.update(sql,count,"SHPC"+count,item.getName(),mobile,item.getEmail(),"","",
+						item.getAddress(),
+						item.getPin(),"","",item.getDbName(),item.getDbName(),"Customer",1,"","","","","S");
 				status = "success";
 			}else {
 				status = "Customer is already registered";

@@ -3,7 +3,7 @@ package com.shoppurs.shop.model;
 public class Customer {
 
 	private int id;
-	private String code,name,mobileNo,isFav,address,pin,email,photo,
+	private String code,name,mobileNo,mobile,isFav,address,pin,email,photo,
 	password,country,state,city,userType,userCreateStatus,
 	ip,dbName,dbUserName,dbPassword,panNo,aadharNo,gstNo,createdBy,updatedBy,createdDate,updatedDate;
 	
@@ -12,6 +12,14 @@ public class Customer {
 	private float ratings;
 	
 	
+
+	public String getMobile() {
+		return mobile;
+	}
+
+	public void setMobile(String mobile) {
+		this.mobile = mobile;
+	}
 
 	public String getUserCreateStatus() {
 		return userCreateStatus;
