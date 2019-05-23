@@ -23,6 +23,7 @@ public class ShopCustomerMapper implements RowMapper<Customer> {
 		customer.setCity(rs.getString("CUST_CITY"));
 		customer.setPhoto(rs.getString("CUST_PHOTO"));
 		customer.setIsFav(rs.getString("IS_FAVOURITE"));
+		customer.setUserCreateStatus(rs.getString("USER_CREATE_STATUS"));
 		customer.setRatings(rs.getFloat("RATINGS"));
 		return customer;
 	}
