@@ -61,7 +61,7 @@ public class OrderApiController {
     	
     }  
     
-    @RequestMapping("/api/shop/order/get_order")
+    @RequestMapping("/api/shop/order/get_shop_cust_order")
 	public MyResponse getShopCustomerOrder(@RequestBody UserID item) {
 		List<MyOrder> itemList =  orderDao.getShopCustomerOrder(item);
 		
@@ -73,7 +73,7 @@ public class OrderApiController {
 		}
 	}
     
-    @RequestMapping("/api/shop/order/get_cust_order")
+    @RequestMapping("/api/shop/order/get_shop_order")
    	public MyResponse getShopOrder(@RequestBody UserID item) {
    		List<MyOrder> itemList =  orderDao.getShopOrder(item);
    		
