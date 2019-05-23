@@ -121,7 +121,7 @@ private static final Logger log = LoggerFactory.getLogger(CustomerApiController.
 						+ "`CUST_PHOTO`, `CUST_ADDRESS`,`CUST_ZIP`,`CUST_PROVINCE`,`CUST_CITY`,"
 						+ "`CREATED_DATE`,`CREATED_BY`,`UPDATED_DATE`,`UPDATED_BY`,"
 						+ "`USER_TYPE`,`ISACTIVE`,`SERVER_IP`,`DB_NAME`,`DB_USERNAME`,`DB_PASSWORD`,`USER_CREATE_STATUS`)" + 
-						" values (?,?,?,?,?,?,?,?,?,?,?,now(),?,now(),?,?,?,?,?,?,?,?)";
+						" values (?,?,?,?,?,?,?,?,?,?,?,now(),?,now(),?,?,?,?,?,?,?)";
 				
 				dynamicJdbc.update(sql,count,"SHPC"+count,item.getName(),item.getMobileNo(),item.getEmail(),"","",item.getAddress(),
 						item.getPin(),"","","","","Customer",1,"","","","","S");
