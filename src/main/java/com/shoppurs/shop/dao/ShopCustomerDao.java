@@ -117,6 +117,10 @@ private static final Logger log = LoggerFactory.getLogger(CustomerApiController.
 			mobile = item.getMobile();
 		}
 		
+		if(item.getEmail() == null || item.getEmail().equals("null")) {
+			item.setEmail("");
+		}
+		
 		try
 		   {
 		     //itemList=dynamicJdbc.query(sql,new Object[] { item.getMobile() }, new ShopCustomerMapper());
