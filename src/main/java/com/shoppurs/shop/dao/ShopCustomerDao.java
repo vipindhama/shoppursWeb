@@ -139,10 +139,18 @@ private static final Logger log = LoggerFactory.getLogger(CustomerApiController.
 				dynamicJdbc.update(sql,count,"SHPC"+count,item.getName(),mobile,item.getEmail(),"","",item.getAddress(),
 						item.getPin(),"","",item.getDbName(),item.getDbName(),"Customer",1,"","","","","S");
 				
-				dynamicShoppursShopJdbc.update(sql,count,"SHPC"+count,item.getName(),mobile,item.getEmail(),"","",
+				sql="insert into customer_info (`CUST_CODE`,`CUST_NAME`,`CUST_MOBILENO`,`CUST_EMAILID`,`PASSWORD`,"
+						+ "`CUST_PHOTO`, `CUST_ADDRESS`,`CUST_ZIP`,`CUST_PROVINCE`,`CUST_CITY`,"
+						+ "`CREATED_DATE`,`CREATED_BY`,`UPDATED_DATE`,`UPDATED_BY`,"
+						+ "`USER_TYPE`,`ISACTIVE`,`SERVER_IP`,`DB_NAME`,`DB_USERNAME`,`DB_PASSWORD`,`USER_CREATE_STATUS`)" + 
+						" values (?,?,?,?,?,?,?,?,?,?,now(),?,now(),?,?,?,?,?,?,?,?)";
+				
+				dynamicShoppursShopJdbc.update(sql,"SHPC"+count,item.getName(),mobile,item.getEmail(),"","",
 						item.getAddress(),
 						item.getPin(),"","",item.getDbName(),item.getDbName(),"Customer",1,"","","","","S");
+				
 				status = "success";
+				
 			}else {
 				status = "Customer is already registered";
 			}
