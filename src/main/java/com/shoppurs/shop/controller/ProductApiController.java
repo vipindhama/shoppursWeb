@@ -116,6 +116,17 @@ public class ProductApiController {
     	
     }
     
+    
+//API to get sync products
+    
+    @RequestMapping("/api/products/syncproductslist")
+    public MyResponse getSyncProductss(@RequestBody UserID item) {
+    	
+    	List<MyProduct> itemList = productDao.getSyncProductList(item);
+    	return generateResponse(true,"Product List fetched successfuly",itemList);
+    	
+    }    
+    
    
     
 //API to get all products

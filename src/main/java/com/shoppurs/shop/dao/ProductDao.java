@@ -502,7 +502,36 @@ public List<MyProduct> getProductList(UserID item) {
 			     return null;
 		    }
 	}
+
+
+public List<MyProduct> getSyncProductList(UserID item) {
 	
+	JdbcTemplate productJdbcTemplate = daoConnection.getDynamicDataSource(DaoConnection.PRODUCT_DB_NAME,
+    		item.getDbUserName(),item.getDbPassword());
+	
+	String sql="select * from PRODUCT_MASTER where PROD_CODE not in (SELECT PROD_CODE FROM "+item.getDbName()+".RET_PRODUCT)";
+	String barSql="select PROD_BARCODE from PRODUCT_BARCODES WHERE PROD_PROD_ID = ?";
+	try
+	   {
+	     List<MyProduct> itemList=productJdbcTemplate.query(sql, new ProductMapper());
+	       if(itemList.size() > 0) {
+	    	   for(MyProduct myProduct : itemList) {
+	    		   if(myProduct.getIsBarcodeAvailable().equals("Y")) {
+	    			   List<Barcode> barcodeList =  productJdbcTemplate.query(barSql,new BarCodeMapper(),myProduct.getProdId());
+	    			   myProduct.setBarcodeList(barcodeList);
+	    		   }
+	    	   }
+		      return itemList;
+	       }else {
+	    	   log.info("ProductList size is 0");
+	    	   return null;
+	       }
+	   }catch(Exception e)
+	     {
+		   log.info("Exception "+e.toString());
+		     return null;
+	    }
+}
 	
 public List<MyProduct> getRetailerProductList(UserID item) {
 
