@@ -158,7 +158,7 @@ public class OrderDao {
 		}
 		
 		
-		return status+"-"+orderId;
+		return status+"-"+orderNo;
 	}
 	
 	
@@ -289,7 +289,7 @@ public class OrderDao {
 		JdbcTemplate dynamicShopJdbc = null,transactionJdbcTemplate =null,shopJdbcTemplate = null;
 		String sql="";
 		int orderId = 0;
-		String ordNum = "";
+		String orderNo = "";
 		List<com.shoppurs.customers.model.MyProduct> myProductList = null;
 		JdbcTemplate dynamicCustJdbc = null;
 		int increament = 0;
@@ -314,10 +314,11 @@ public class OrderDao {
 			
 			 shopCode = myorder.getShopCode();
 			 
-			if(orderId == 0)
-			orderId = myorder.getOrderId();
 			
-			ordNum = myorder.getCustCode()+"-"+orderId;
+			if(orderNo == null || orderNo.equals(""))
+				orderNo = myorder.getOrderNumber();
+			
+			
 			if(dynamicShopJdbc == null)
 				dynamicShopJdbc = daoConnection.getDynamicDataSource(myorder.getDbName(),myorder.getDbUserName(),myorder.getDbPassword());
 			
@@ -352,7 +353,7 @@ public class OrderDao {
 						"`UPDATED_BY`,`CREATED_DATE`,`UPDATED_DATE`,`ORD_STATUS`) " + 
 						"VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,now(),now(),?)";
 				
-				dynamicShopJdbc.update(sql,orderId,ordNum,myorder.getOrderDate(),myorder.getOrderDeliveryNote(),
+				dynamicShopJdbc.update(sql,orderId,orderNo,myorder.getOrderDate(),myorder.getOrderDeliveryNote(),
 						myorder.getOrderDeliveryMode(),
 						myorder.getPaymentMode(),myorder.getOrderImage(),myorder.getCustCode(),
 						myorder.getCustName(),myorder.getMobileNo(),myorder.getDeliveryAddress(),myorder.getPinCode(),
@@ -360,6 +361,9 @@ public class OrderDao {
 						myorder.getOrdCouponId(),myorder.getCreatedBy(),
 						myorder.getUpdateBy(),myorder.getOrderStatus());
 				
+				sql="SELECT MAX(ORD_ID) FROM CUST_ORDER";
+				int ordId = dynamicShopJdbc.queryForObject(sql, Integer.class);
+				int custOrderId = 0;
 				if(increament == 0) {
 				if(dynamicCustJdbc != null) {
 					sql="INSERT INTO `CUST_ORDER`" + 
@@ -371,18 +375,26 @@ public class OrderDao {
 							"`UPDATED_BY`,`CREATED_DATE`,`UPDATED_DATE`,`ORD_STATUS`) " + 
 							"VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,now(),now(),?)";
 					
-					dynamicCustJdbc.update(sql,orderId,ordNum,myorder.getOrderDate(),myorder.getOrderDeliveryNote(),
+					dynamicCustJdbc.update(sql,orderId,orderNo,myorder.getOrderDate(),myorder.getOrderDeliveryNote(),
 							myorder.getOrderDeliveryMode(),
 							myorder.getPaymentMode(),myorder.getOrderImage(),myorder.getCustCode(),
 							myorder.getCustName(),myorder.getMobileNo(),myorder.getDeliveryAddress(),myorder.getPinCode(),
 							myorder.getTotalQuantity(),myorder.getToalAmount(),
 							myorder.getOrdCouponId(),myorder.getCreatedBy(),
 							myorder.getUpdateBy(),myorder.getOrderStatus());
+					
+					sql="SELECT ORD_ID FROM CUST_ORDER WHERE ORD_NO = ?";
+					custOrderId = dynamicCustJdbc.queryForObject(sql, Integer.class,orderNo);
 				}
 				
 			}	
 			
 			increament++;
+			
+			sql="SELECT ORD_ID FROM CUST_ORDER WHERE ORD_NO = ?";
+			orderId = dynamicShopJdbc.queryForObject(sql, Integer.class,orderNo);
+			
+			
 			
 			myProductList = myorder.getMyProductList();
 			int qty = 0;
@@ -390,6 +402,8 @@ public class OrderDao {
 			float totIgst = 0f,totSgst = 0f,totCgst = 0f,totalDisAmount = 0f,totalPrice = 0f;
 			invoiceDetailList = new ArrayList();
 			List<Barcode> barcodeList = null;
+			
+			
 			
 			for(com.shoppurs.customers.model.MyProduct myProduct : myProductList) {
 				qty = myProduct.getQty();
@@ -405,14 +419,15 @@ public class OrderDao {
 					myProduct = dynamicShopJdbc.query(sql,new com.shoppurs.customers.mapper.ProductMapper(),barCode).get(0);
 				}
 				
-				int ordId = 0;
+				/*int ordId = 0;
 				if(barCode == null || barCode.equals("null") || barCode.equals("")) {
 					sql="SELECT ORD_ID FROM cust_order_details where PROD_ID = ? AND ORD_SHOP_CODE = ? AND ORD_ORD_ID = ?";
 					ordId = transactionJdbcTemplate.queryForObject(sql, Integer.class,myProduct.getProdId(),shopCode,orderId);
 				}else {
 					sql="SELECT ORD_ID FROM cust_order_details where PROD_BARCODE = ? AND ORD_SHOP_CODE = ? AND ORD_ORD_ID = ?";
 				    ordId = transactionJdbcTemplate.queryForObject(sql, Integer.class,barCode,shopCode,orderId);
-				}
+				}*/
+
 				
 				sql="UPDATE cust_order_details SET ORD_PAYMENT_STATUS = ? WHERE ORD_ORD_ID = ? AND ORD_SHOP_CODE = ?";
 				transactionJdbcTemplate.update(sql,myorder.getOderPaymentStatus(),orderId,shopCode);
@@ -424,7 +439,7 @@ public class OrderDao {
 						"`PROD_IMAGE_2`,`PROD_IMAGE_3`,`PROD_CODE`,`PROD_ID`,`IS_BARCODE_AVAILABLE`) "
 						+ "VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 				
-				dynamicShopJdbc.update(sql,ordId,orderId,myorder.getTransactionId(),qty,myProduct.getOfferId(),shopCode,myShop.getRetshopname(),
+				dynamicShopJdbc.update(sql,0,ordId,myorder.getTransactionId(),qty,myProduct.getOfferId(),shopCode,myShop.getRetshopname(),
 						myShop.getRetaddress(),myShop.getRetmobile(),myorder.getOrderDeliveryMode(),myorder.getOrderStatus(),
 						myorder.getOderPaymentStatus(),myProduct.getProdName(),barCode,
 						myProduct.getProdDesc(),myProduct.getProdMrp(),myProduct.getProdSp(),myProduct.getProdCgst(),
@@ -433,7 +448,7 @@ public class OrderDao {
 				
 				if(dynamicCustJdbc != null) {
 				
-					dynamicCustJdbc.update(sql,ordId,orderId,myorder.getTransactionId(),qty,myProduct.getOfferId(),shopCode,myShop.getRetshopname(),
+					dynamicCustJdbc.update(sql,0,custOrderId,myorder.getTransactionId(),qty,myProduct.getOfferId(),shopCode,myShop.getRetshopname(),
 							myShop.getRetaddress(),myShop.getRetmobile(),myorder.getOrderDeliveryMode(),myorder.getOrderStatus(),
 							myorder.getOderPaymentStatus(),myProduct.getProdName(),barCode,
 							myProduct.getProdDesc(),myProduct.getProdMrp(),myProduct.getProdSp(),myProduct.getProdCgst(),
