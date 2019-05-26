@@ -510,17 +510,11 @@ public List<MyProduct> getSyncProductList(UserID item) {
     		item.getDbUserName(),item.getDbPassword());
 	
 	String sql="select * from PRODUCT_MASTER where PROD_CODE in (SELECT PROD_CODE FROM "+item.getDbName()+".RET_PRODUCT)";
-	String barSql="select PROD_BARCODE from PRODUCT_BARCODES WHERE PROD_PROD_ID = ?";
 	try
 	   {
 	     List<MyProduct> itemList=productJdbcTemplate.query(sql, new ProductMapper());
 	       if(itemList.size() > 0) {
-	    	   for(MyProduct myProduct : itemList) {
-	    		   if(myProduct.getIsBarcodeAvailable().equals("Y")) {
-	    			   List<Barcode> barcodeList =  productJdbcTemplate.query(barSql,new BarCodeMapper(),myProduct.getProdId());
-	    			   myProduct.setBarcodeList(barcodeList);
-	    		   }
-	    	   }
+	    	  
 		      return itemList;
 	       }else {
 	    	   log.info("ProductList size is 0");
