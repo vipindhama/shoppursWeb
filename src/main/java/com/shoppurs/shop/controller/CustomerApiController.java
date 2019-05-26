@@ -124,7 +124,7 @@ public class CustomerApiController {
   		@RequestMapping("/api/shop_customer/get_ratings")
   		public MyResponse getCustomerRatings(@RequestBody UserID item) {
   			float ratings = shopCustomerDao.getCustomerRatings(item);
-  			return generateResponse(true,"Ratings fetched successfully.",null);
+  			return generateResponse(true,"Ratings fetched successfully.",ratings);
   		}	 		
   		
 	//This method generates response body
