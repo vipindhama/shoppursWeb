@@ -29,9 +29,9 @@ public class OrderApiController {
 	public MyResponse generateShoppursOrder(@RequestBody List<MyOrder> myOrderList) {
 		String[] dataArray =  orderDao.generateOrder(myOrderList).split("-");
 		String status = dataArray[0];
-		String orderId = dataArray[1];
+		String orderNumber = dataArray[1];
 		Map<String,String> map = new HashMap();
-		map.put("orderId",orderId);
+		map.put("orderNumber",orderNumber);
 		if(status.equals("success")) {
 			return generateResponse(true,"Order generated successfully.",map);
 		}

@@ -87,7 +87,7 @@ public class OrderDao {
 					
 					sql="SELECT MAX(ORD_ID) FROM CUST_ORDER";
 					orderId = transactionJdbcTemplate.queryForObject(sql, Integer.class);
-					orderNo = myorder.getCustCode()+"-"+orderId;
+					orderNo = myorder.getCustCode()+"/"+orderId;
 					myorder.setOrderId(orderId);
 					myorder.setOrderNumber(orderNo);
 					
@@ -345,15 +345,15 @@ public class OrderDao {
 			
 			
 				sql="INSERT INTO `CUST_ORDER`" + 
-						"(`ORD_ID`,`ORD_NO`,`ORD_DATE`,`ORD_DELIVERY_NOTE`,`ORD_DELIVERY_MODE`," + 
+						"(`ORD_NO`,`ORD_DATE`,`ORD_DELIVERY_NOTE`,`ORD_DELIVERY_MODE`," + 
 						"`ORD_PAYMENT_MODE`,`ORD_IMAGE`,"
 						+ "`ORD_CUST_CODE`,`ORD_CUST_NAME`," + 
 						"`ORD_CUST_MOBILE`,`ORD_DELIVERY_ADDRESS`," + 
 						"`ORD_PINCODE`,`ORD_TOTAL_QTY`,`ORD_TOTAL_AMT`,`ORD_COUPON_CODE`,`CREATED_BY`," + 
 						"`UPDATED_BY`,`CREATED_DATE`,`UPDATED_DATE`,`ORD_STATUS`) " + 
-						"VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,now(),now(),?)";
+						"VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,now(),now(),?)";
 				
-				dynamicShopJdbc.update(sql,orderId,orderNo,myorder.getOrderDate(),myorder.getOrderDeliveryNote(),
+				dynamicShopJdbc.update(sql,orderNo,myorder.getOrderDate(),myorder.getOrderDeliveryNote(),
 						myorder.getOrderDeliveryMode(),
 						myorder.getPaymentMode(),myorder.getOrderImage(),myorder.getCustCode(),
 						myorder.getCustName(),myorder.getMobileNo(),myorder.getDeliveryAddress(),myorder.getPinCode(),
@@ -367,15 +367,15 @@ public class OrderDao {
 				if(increament == 0) {
 				if(dynamicCustJdbc != null) {
 					sql="INSERT INTO `CUST_ORDER`" + 
-							"(`ORD_ID`,`ORD_NO`,`ORD_DATE`,`ORD_DELIVERY_NOTE`,`ORD_DELIVERY_MODE`," + 
+							"(`ORD_NO`,`ORD_DATE`,`ORD_DELIVERY_NOTE`,`ORD_DELIVERY_MODE`," + 
 							"`ORD_PAYMENT_MODE`,`ORD_IMAGE`,"
 							+ "`ORD_CUST_CODE`,`ORD_CUST_NAME`," + 
 							"`ORD_CUST_MOBILE`,`ORD_DELIVERY_ADDRESS`," + 
 							"`ORD_PINCODE`,`ORD_TOTAL_QTY`,`ORD_TOTAL_AMT`,`ORD_COUPON_CODE`,`CREATED_BY`," + 
 							"`UPDATED_BY`,`CREATED_DATE`,`UPDATED_DATE`,`ORD_STATUS`) " + 
-							"VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,now(),now(),?)";
+							"VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,now(),now(),?)";
 					
-					dynamicCustJdbc.update(sql,orderId,orderNo,myorder.getOrderDate(),myorder.getOrderDeliveryNote(),
+					dynamicCustJdbc.update(sql,orderNo,myorder.getOrderDate(),myorder.getOrderDeliveryNote(),
 							myorder.getOrderDeliveryMode(),
 							myorder.getPaymentMode(),myorder.getOrderImage(),myorder.getCustCode(),
 							myorder.getCustName(),myorder.getMobileNo(),myorder.getDeliveryAddress(),myorder.getPinCode(),
@@ -432,14 +432,14 @@ public class OrderDao {
 				sql="UPDATE cust_order_details SET ORD_PAYMENT_STATUS = ? WHERE ORD_ORD_ID = ? AND ORD_SHOP_CODE = ?";
 				transactionJdbcTemplate.update(sql,myorder.getOderPaymentStatus(),orderId,shopCode);
 				
-				sql="INSERT INTO `cust_order_details`(`ORD_ID`,`ORD_ORD_ID`,`ORD_TRANS_ID`,`ORD_QTY`,`ORD_OFFER_ID`,`ORD_SHOP_CODE`,`ORD_SHOP_NAME`,"
+				sql="INSERT INTO `cust_order_details`(`ORD_ORD_ID`,`ORD_TRANS_ID`,`ORD_QTY`,`ORD_OFFER_ID`,`ORD_SHOP_CODE`,`ORD_SHOP_NAME`,"
 						+ "`ORD_SHOP_ADDRESS`,`ORD_SHOP_MOBILE`,`ORD_DELIVERY_MODE`,`ORD_STATUS`,`ORD_PAYMENT_STATUS`,"
 						+ "`PROD_NAME`,`PROD_BARCODE`," + 
 						"`PROD_DESC`,`PROD_MRP`,`PROD_SP`,`PROD_CGST`,`PROD_IGST`,`PROD_SGST`,`PROD_IMAGE_1`," + 
 						"`PROD_IMAGE_2`,`PROD_IMAGE_3`,`PROD_CODE`,`PROD_ID`,`IS_BARCODE_AVAILABLE`) "
-						+ "VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+						+ "VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 				
-				dynamicShopJdbc.update(sql,0,ordId,myorder.getTransactionId(),qty,myProduct.getOfferId(),shopCode,myShop.getRetshopname(),
+				dynamicShopJdbc.update(sql,ordId,myorder.getTransactionId(),qty,myProduct.getOfferId(),shopCode,myShop.getRetshopname(),
 						myShop.getRetaddress(),myShop.getRetmobile(),myorder.getOrderDeliveryMode(),myorder.getOrderStatus(),
 						myorder.getOderPaymentStatus(),myProduct.getProdName(),barCode,
 						myProduct.getProdDesc(),myProduct.getProdMrp(),myProduct.getProdSp(),myProduct.getProdCgst(),
@@ -448,7 +448,7 @@ public class OrderDao {
 				
 				if(dynamicCustJdbc != null) {
 				
-					dynamicCustJdbc.update(sql,0,custOrderId,myorder.getTransactionId(),qty,myProduct.getOfferId(),shopCode,myShop.getRetshopname(),
+					dynamicCustJdbc.update(sql,custOrderId,myorder.getTransactionId(),qty,myProduct.getOfferId(),shopCode,myShop.getRetshopname(),
 							myShop.getRetaddress(),myShop.getRetmobile(),myorder.getOrderDeliveryMode(),myorder.getOrderStatus(),
 							myorder.getOderPaymentStatus(),myProduct.getProdName(),barCode,
 							myProduct.getProdDesc(),myProduct.getProdMrp(),myProduct.getProdSp(),myProduct.getProdCgst(),
