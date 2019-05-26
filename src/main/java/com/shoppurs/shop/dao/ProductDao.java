@@ -509,7 +509,7 @@ public List<MyProduct> getSyncProductList(UserID item) {
 	JdbcTemplate productJdbcTemplate = daoConnection.getDynamicDataSource(DaoConnection.PRODUCT_DB_NAME,
     		item.getDbUserName(),item.getDbPassword());
 	
-	String sql="select * from PRODUCT_MASTER where PROD_CODE not in (SELECT PROD_CODE FROM "+item.getDbName()+".RET_PRODUCT)";
+	String sql="select * from PRODUCT_MASTER where PROD_CODE in (SELECT PROD_CODE FROM "+item.getDbName()+".RET_PRODUCT)";
 	String barSql="select PROD_BARCODE from PRODUCT_BARCODES WHERE PROD_PROD_ID = ?";
 	try
 	   {
