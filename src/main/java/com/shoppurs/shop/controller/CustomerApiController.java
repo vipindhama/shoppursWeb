@@ -105,7 +105,7 @@ public class CustomerApiController {
   			}
   		}	
   		
-  	//setFavourite
+  	//setRatings
   		@RequestMapping("/api/shop_customer/ratings")
   		public MyResponse setRatings(@RequestBody Ratings item) {
   			String status = shopCustomerDao.setRatings(item);
@@ -120,7 +120,12 @@ public class CustomerApiController {
   			}
   		}	
   		
-  		
+  	//getRatings
+  		@RequestMapping("/api/shop_customer/get_ratings")
+  		public MyResponse getCustomerRatings(@RequestBody UserID item) {
+  			float ratings = shopCustomerDao.getCustomerRatings(item);
+  			return generateResponse(true,"Ratings fetched successfully.",null);
+  		}	 		
   		
 	//This method generates response body
     private MyResponse generateResponse(boolean status,String message,Object data) {

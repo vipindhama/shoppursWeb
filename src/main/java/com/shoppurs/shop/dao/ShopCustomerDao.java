@@ -238,6 +238,23 @@ private static final Logger log = LoggerFactory.getLogger(CustomerApiController.
 		return status;
 	}
 	
+	public float getCustomerRatings(UserID item) {
+		float ratings = 0f;
+		String sql="SELECT avg(ORD_RATINGS_BY_SHOP) FROM CUST_ORDER WHERE ORD_CUST_CODE = ?";
+		
+		JdbcTemplate dynamicJdbc = getDynamicDataSource(item.getDbName(),item.getDbUserName(),item.getDbPassword());
+		
+		try
+		   {
+			ratings = dynamicJdbc.queryForObject(sql, Float.class,item.getCode());
+		   }catch(Exception e)
+		     {
+			   log.info("Exception "+e.toString());
+		    }
+		
+		return ratings;
+	}
+	
 	
 	private JdbcTemplate getDynamicDataSource(String dbName,String dbUserName,String dbPassword) {
 		dynamicDataSource.setDriverClassName("com.mysql.cj.jdbc.Driver");
