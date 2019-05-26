@@ -165,14 +165,14 @@ private static final Logger log = LoggerFactory.getLogger(CustomerApiController.
 	
 	public List<CustomerSale> getCustomerSaleData(UserID item) {
 		List<CustomerSale> itemList = null;
-		String sql="SELECT ORD_ID,ORD_DATE,SUM(ORD_TOTAL_AMT) as AMOUNT " + 
-				"FROM cust_order where ORD_CUST_CODE = ? group by month(ORD_DATE);";
+		String sql="SELECT INVM_ID,INVM_DATE,SUM(INVM_TOT_NET_PAYABLE) as AMOUNT " + 
+				"FROM INVOICE_MASTER where INVM_SHOP_CODE = ? AND INVM_CUST_ID = ? AND INVM_STATUS = 'Generated' group by month(INVM_DATE);";
 		
 		JdbcTemplate dynamicJdbc = getDynamicDataSource(item.getDbName(),item.getDbUserName(),item.getDbPassword());
 		
 		try
 		   {
-		     itemList=dynamicJdbc.query(sql,new Object[] { item.getCode() }, new CustomerSaleMapper());
+		     itemList=dynamicJdbc.query(sql,new Object[] { item.getCode(),item.getId() }, new CustomerSaleMapper());
 		   }catch(Exception e)
 		     {
 			   log.info("Exception "+e.toString());
