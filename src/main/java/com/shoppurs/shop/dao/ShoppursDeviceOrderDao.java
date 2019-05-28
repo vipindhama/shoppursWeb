@@ -305,9 +305,9 @@ private static final Logger log = LoggerFactory.getLogger(ShoppursApiController.
 				}
 				
 				
-				totIgst = totIgst + (myProduct.getProdMrp() * qty * myProduct.getProdIgst()/100);
-				totSgst = totSgst + (myProduct.getProdMrp() * qty * myProduct.getProdSgst()/100);
-				totCgst = totCgst + (myProduct.getProdMrp() * qty * myProduct.getProdCgst()/100);
+				totIgst = totIgst + (myProduct.getProdSp() * qty * myProduct.getProdIgst()/100);
+				totSgst = totSgst + (myProduct.getProdSp() * qty * myProduct.getProdSgst()/100);
+				totCgst = totCgst + (myProduct.getProdSp() * qty * myProduct.getProdCgst()/100);
 				totalDisAmount = totalDisAmount + (myProduct.getProdMrp() - myProduct.getProdSp());
 				totalPrice = totalPrice + (myProduct.getProdSp() * qty);
 				
@@ -368,7 +368,7 @@ private static final Logger log = LoggerFactory.getLogger(ShoppursApiController.
             invoice.setInvTotDisAmount(totalDisAmount);
             invoice.setInvTotTaxAmount(invoice.getInvTotCGST() + invoice.getInvTotSGST());
             invoice.setInvTotAmount(totalPrice + invoice.getInvTotTaxAmount());
-            invoice.setInvTotNetPayable(invoice.getInvTotAmount() - invoice.getInvTotDisAmount());
+            invoice.setInvTotNetPayable(invoice.getInvTotAmount());
             invoice.setInvStatus("Generated");
             invoice.setInvCoupenId(myorder.getOrdCouponId());
             invoice.setInvPaymentMode(myorder.getPaymentMode());

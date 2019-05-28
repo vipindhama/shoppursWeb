@@ -1,8 +1,11 @@
 package com.shoppurs.shop.dao;
 
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import org.slf4j.Logger;
@@ -29,6 +32,7 @@ import com.shoppurs.shop.model.Customer;
 import com.shoppurs.shop.model.Invoice;
 import com.shoppurs.shop.model.InvoiceDetail;
 import com.shoppurs.shop.model.MyDataSource;
+import com.shoppurs.shop.model.MyPayment;
 import com.shoppurs.shop.model.MyProduct;
 import com.shoppurs.shop.model.ProductQty;
 import com.shoppurs.shop.model.SetOrderStatusObject;
@@ -40,6 +44,9 @@ public class OrderDao {
 	
 	@Autowired
     private DaoConnection daoConnection;
+	
+	@Autowired
+	private TransactionDao transactionDao;
 	
 	
 	public String generateOrder(List<MyOrder> myOrderList) {
@@ -289,7 +296,7 @@ public class OrderDao {
 		JdbcTemplate dynamicShopJdbc = null,transactionJdbcTemplate =null,shopJdbcTemplate = null;
 		String sql="";
 		int orderId = 0;
-		String orderNo = "";
+		String orderNo = "",invNo = "";
 		List<com.shoppurs.customers.model.MyProduct> myProductList = null;
 		JdbcTemplate dynamicCustJdbc = null;
 		int increament = 0;
@@ -476,9 +483,9 @@ public class OrderDao {
 				
 				
 				
-				totIgst = totIgst + (myProduct.getProdMrp() * qty * myProduct.getProdIgst()/100);
-				totSgst = totSgst + (myProduct.getProdMrp() * qty * myProduct.getProdSgst()/100);
-				totCgst = totCgst + (myProduct.getProdMrp() * qty * myProduct.getProdCgst()/100);
+				totIgst = totIgst + (myProduct.getProdSp() * qty * myProduct.getProdIgst()/100);
+				totSgst = totSgst + (myProduct.getProdSp() * qty * myProduct.getProdSgst()/100);
+				totCgst = totCgst + (myProduct.getProdSp() * qty * myProduct.getProdCgst()/100);
 				totalDisAmount = totalDisAmount + (myProduct.getProdMrp() - myProduct.getProdSp());
 				totalPrice = totalPrice + (myProduct.getProdSp() * qty);
 				
@@ -518,8 +525,8 @@ public class OrderDao {
 			}else {
 				id = id + 1;
 			}
-			
-            invoice.setInvNo("INV"+id);
+			invNo = "INV"+id;
+            invoice.setInvNo(invNo);
             invoice.setInvTransId(myorder.getTransactionId());
             invoice.setInvDate("");
             invoice.setInvShopId(myShop.getRetId());
@@ -540,7 +547,7 @@ public class OrderDao {
             invoice.setInvTotDisAmount(totalDisAmount);
             invoice.setInvTotTaxAmount(invoice.getInvTotCGST() + invoice.getInvTotSGST());
             invoice.setInvTotAmount(totalPrice + invoice.getInvTotTaxAmount());
-            invoice.setInvTotNetPayable(invoice.getInvTotAmount() - invoice.getInvTotDisAmount());
+            invoice.setInvTotNetPayable(invoice.getInvTotAmount());
             invoice.setInvStatus("Generated");
             invoice.setInvCoupenId(myorder.getOrdCouponId());
             invoice.setInvPaymentMode(myorder.getPaymentMode());
@@ -553,10 +560,56 @@ public class OrderDao {
 			
 		}
 		
-			status = generateInvoice(invoiceList);			
+		if(item.getPaymentMode().equals("Cash")) {
+			//Invoice invoice = invoiceList.get(0);
+			status = addPaymentData(invoice,orderNo);
+			if(status.equals("success")){
+				status = generateInvoice(invoiceList);
+			}
+		}else {
+			status = generateInvoice(invoiceList);
+		}
 			
 		}catch(Exception e) {
 			status = "There is some problem in placing order...";
+			e.printStackTrace();
+		}
+		
+		return status;
+	}
+	
+	public String addPaymentData(Invoice invoice,String orderNumber) {
+		String status = "failure";
+		Calendar calendar = Calendar.getInstance(Locale.getDefault());
+        String timeStamp=new SimpleDateFormat("dd-MM-yyyy HH:mm:ss").format(calendar.getTime());
+        
+		MyPayment payment = new MyPayment();
+		payment.setTransactionId(invoice.getInvTransId());
+		payment.setOrderNumber(orderNumber);
+		payment.setPaymentMethod("Cash");
+		payment.setPaymentBrand("Cash");
+		payment.setPaymentMode("Cash");
+		payment.setApproved(true);
+		payment.setTransactionType("Sale");
+		payment.setAmount(invoice.getInvTotNetPayable());
+		payment.setResponseCode("0");
+		payment.setResponseMessage("Success");
+		payment.setInvoiceNo(invoice.getInvNo());
+		payment.setPayStatus("Done");
+		payment.setMerchantId(invoice.getInvShopCode());
+		payment.setMerchantName(invoice.getInvShopName());
+		payment.setMerchantAddress(invoice.getInvShopAddress());
+		payment.setCustCode(invoice.getCustCode());
+		payment.setDate(timeStamp);
+		payment.setUserCreateStatus(invoice.getCustUserCreateStatus());
+		payment.setUserName(invoice.getUserName());
+		payment.setDbName(invoice.getDbName());
+		payment.setDbUserName(invoice.getDbUserName());
+		payment.setDbPassword(invoice.getDbPassword());
+		try {
+			status  = transactionDao.insertPaymentData(payment);
+		}catch(Exception e) {
+			status = "error";
 			e.printStackTrace();
 		}
 		

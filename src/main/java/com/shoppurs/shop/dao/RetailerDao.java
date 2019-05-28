@@ -10,9 +10,12 @@ import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 
 import org.apache.tomcat.util.codec.binary.Base64;
 import org.slf4j.Logger;
@@ -33,6 +36,7 @@ import com.shoppurs.shop.mapper.DbUserMapper;
 import com.shoppurs.shop.mapper.MyUserMapper;
 import com.shoppurs.shop.mapper.ProductSaleMapper;
 import com.shoppurs.shop.mapper.ShopCustomerSaleMapper;
+import com.shoppurs.shop.mapper.UserLicenseMapper;
 import com.shoppurs.shop.model.Customer;
 import com.shoppurs.shop.model.DbUser;
 import com.shoppurs.shop.model.MyBank;
@@ -41,6 +45,7 @@ import com.shoppurs.shop.model.MyUser;
 import com.shoppurs.shop.model.ProductSaleObject;
 import com.shoppurs.shop.model.ShopCustomerSaleData;
 import com.shoppurs.shop.model.UserID;
+import com.shoppurs.shop.model.UserLicense;
 import com.shoppurs.shop.model.UserLogin;
 import com.shoppurs.shop.model.requestModel.ShopSaleReq;
 import com.shoppurs.shop.model.requestModel.UserDetailsReq;
@@ -364,6 +369,70 @@ public HashMap<String,Object> getShopSaleData(ShopSaleReq item) {
 	    }
 	
 	return hashMap;
+}
+
+public String buyUserLicense(UserLicense item) {
+	String status = "failure";	
+	JdbcTemplate dynamicJdbc = daoConnection.getDynamicDataSource(item.getDbName(),item.getDbUserName(),item.getDbPassword());
+	
+	   try {
+		   String sql="insert into RETAILER_MASTER (`UL_ID`," + 
+		   		"`UL_SHOP_CODE`," + 
+		   		"`UL_NO_OF_USER`," + 
+		   		"`UL_SCHEME`," + 
+		   		"`UL_AMOUNT`," + 
+		   		"`UL_LICENSE_PURCHASE_DATE`," + 
+		   		"`UL_LICENSE_RENEW_DATE`," + 
+		   		"`UL_LICENSE_EXPIRE_DATE`," + 
+		   		"`UL_LICENSE_TYPE`," + 
+		   		"`CREATED_BY`," + 
+		   		"`UPDATED_BY`," + 
+		   		"`CREATED_DATE`," + 
+		   		"`UPDATED_DATE`) values "
+	    			+ "(0,?,?,?,?,now(),now(),?,?,?,?,now(),now())";
+		   
+		   Calendar calendar = Calendar.getInstance(Locale.getDefault());
+		   if(item.getScheme().equals("monthly")) {
+			   calendar.add(Calendar.MONTH, 1);
+		   }else if(item.getScheme().equals("quarterly")) {
+			   calendar.add(Calendar.MONTH, 6); 
+		   }else if(item.getScheme().equals("yearly")) {
+			   calendar.add(Calendar.YEAR, 1);
+		   }
+		   String timeStamp=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(calendar.getTime());
+		   
+		   dynamicJdbc.update(sql, 0,item.getShopCode(),item.getNumOfUsers(),item.getScheme(),item.getAmount(),timeStamp,
+				   item.getLicenseType(),item.getUserName(),item.getUserName());
+		   
+		   status = "success";
+	    	
+	   }catch(Exception e) {
+		   status = "error";
+		   e.printStackTrace();
+	   }
+	
+	return status;
+}
+
+public List<UserLicense> getUserLicenses(UserID item) {
+	
+	JdbcTemplate shopJdbcTemplate = daoConnection.getDynamicDataSource(item.getDbName(),
+			item.getDbUserName(),item.getDbPassword());
+	
+	List<UserLicense> itemList = new ArrayList();
+	
+	String sql="select * from user_license";
+	try
+	   {
+	     itemList=shopJdbcTemplate.query(sql, new UserLicenseMapper());
+	       
+	   }catch(Exception e)
+	     {
+		   log.info("Exception "+e.toString());
+		    
+	    }
+	
+	return itemList;
 }
 
 private void generateQRCodeImage(String text, int width, int height, String filePath)

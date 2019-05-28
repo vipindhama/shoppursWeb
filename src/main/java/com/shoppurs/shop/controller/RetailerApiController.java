@@ -1,6 +1,7 @@
 package com.shoppurs.shop.controller;
 
 import java.util.HashMap;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -15,6 +16,8 @@ import com.shoppurs.shop.model.Customer;
 import com.shoppurs.shop.model.MyBank;
 import com.shoppurs.shop.model.MyResponse;
 import com.shoppurs.shop.model.MyUser;
+import com.shoppurs.shop.model.UserID;
+import com.shoppurs.shop.model.UserLicense;
 import com.shoppurs.shop.model.UserLogin;
 import com.shoppurs.shop.model.requestModel.ShopSaleReq;
 import com.shoppurs.shop.model.requestModel.UserDetailsReq;
@@ -112,7 +115,32 @@ public class RetailerApiController {
     	HashMap<String,Object> response = retailerDao.getShopSaleData(item);
     	return generateResponse(true,"Sale data fetched successfuly",response);
     	
-    }  
+    } 
+    
+//API to buy user license
+    
+    @RequestMapping("/api/user/buy_user_license")
+    public MyResponse buyUserLicense(@RequestBody  UserLicense item) {
+    	
+    	String status = retailerDao.buyUserLicense(item);
+    	
+    	if(status.equals("success")) {
+    		return generateResponse(true,"Subscription successfully registered.",item);
+    	}else {
+    		return generateResponse(false,status,null);
+    	}
+    	
+    }      
+    
+//API to get user license
+    
+    @RequestMapping("/api/user/user_licenses")
+    public MyResponse getUserLicenses(@RequestBody UserID item) {
+    	
+    	List<UserLicense> itemList = retailerDao.getUserLicenses(item);
+    	return generateResponse(true,"User licenses fetched successfuly",itemList);
+    	
+    }     
     
     
 //This method generates response body

@@ -73,7 +73,7 @@ public class TransactionDao {
 				"`CREATED_DATE`," + 
 				"`UPDATED_DATE`)" + 
 				"VALUES " + 
-				"(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,now(),now());";
+				"(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,now(),now());";
 		
 		
 		String sqlPayStatus = "UPDATE CUST_ORDER_DETAILS SET ORD_PAYMENT_STATUS = ? WHERE ORD_ORD_ID = "
@@ -109,10 +109,10 @@ public class TransactionDao {
 			
 			if(item.getUserCreateStatus() != null && !item.getUserCreateStatus().equals("S")) {
 				
-				sql="SELECT * FROM CUSTOMER_INFO where CUST_CODE = ?";
+				String custSql ="SELECT * FROM CUSTOMER_INFO where CUST_CODE = ?";
 				JdbcTemplate customerJdbc = daoConnection.getDynamicDataSource(DaoConnection.CUSTOMER_DB_NAME,
 						item.getDbUserName(),item.getDbPassword());
-				Customer customer = customerJdbc.query(sql,new CustomerMapper(),item.getCustCode()).get(0);
+				Customer customer = customerJdbc.query(custSql,new CustomerMapper(),item.getCustCode()).get(0);
 				JdbcTemplate dynamicCustJdbc = daoConnection.getDynamicDataSource(customer.getDbName(),
 						item.getDbUserName(),item.getDbPassword());
 				
