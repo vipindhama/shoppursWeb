@@ -21,19 +21,19 @@ public class TransactionDao {
 	@Autowired
     private DaoConnection daoConnection;
 	
-	@Autowired
-   	@Qualifier("transaction-database")
-    private JdbcTemplate transactionJdbcTemplate;
 	
 	
 	public String insertPaymentData(MyPayment item) {
 		
 		String status = "failure";
 		JdbcTemplate dynamicShopJdbc = daoConnection.getDynamicDataSource(item.getDbName(),item.getDbUserName(),item.getDbPassword());
+		JdbcTemplate transactionJdbcTemplate = daoConnection.getDynamicDataSource(DaoConnection.TRANS_DB_NAME,
+				item.getDbUserName(),item.getDbPassword());
 		
 		String sql = "INSERT INTO `cust_payment`" + 
 				"(`PAYMENT_ID`," + 
 				"`PAYMENT_TRANSACTION_ID`," + 
+				"`PAYMENT_TRANSACTION_TYPE`," + 
 				"`PAYMENT_MERCHANT_ID`," + 
 				"`PAYMENT_CARD_BRAND`," + 
 				"`PAYMENT_CARD_LEVEL`," + 
@@ -43,6 +43,9 @@ public class TransactionDao {
 				"`PAYMENT_PAYMENT_ID`," + 
 				"`PAYMENT_PIN_VERIFIED_FLAG`," + 
 				"`PAYMENT_RESPONSE_CODE`," + 
+				"`PAYMENT_RESPONSE_MESSAGE`," + 
+				"`PAYMENT_CURRENCY_CODE`," + 
+				"`PAYMENT_SECURE_HASH`," + 
 				"`PAYMENT_AID`," + 
 				"`PAYMENT_AID_NAME`," + 
 				"`PAYMENT_RRN`," + 
@@ -57,6 +60,9 @@ public class TransactionDao {
 				"`PAYMENT_BANK_MERCHANT_ID`," + 
 				"`PAYMENT_BANK_TERMINAL_ID`," + 
 				"`PAYMENT_BATCH_NO`," + 
+				"`PAYMENT_PAYMENT_METHOD`," + 
+				"`PAYMENT_PAYMENT_BRAND`," + 
+				"`PAYMENT_PAYMENT_MODE`," + 
 				"`PAYMENT_PAYMENT_DATE`," + 
 				"`PAYMENT_PAYMENT_INVOICE_NO`," + 
 				"`PAYMENT_MERCHANT_NAME`," + 
@@ -67,34 +73,41 @@ public class TransactionDao {
 				"`CREATED_DATE`," + 
 				"`UPDATED_DATE`)" + 
 				"VALUES " + 
-				"(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,now(),now());";
+				"(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,now(),now());";
 		
 		
-		String sqlPayStatus = "UPDATE CUST_ORDER_DETAILS SET ORD_PAYMENT_STATUS = ? WHERE ORD_ORD_ID = ?";
+		String sqlPayStatus = "UPDATE CUST_ORDER_DETAILS SET ORD_PAYMENT_STATUS = ? WHERE ORD_ORD_ID = "
+				+ "(SELECT ORD_ID FROM CUST_ORDER WHERE ORD_NO = ?)";
 		
 		try {
 			
-			transactionJdbcTemplate.update(sql,0,item.getTransactionId(),item.getMerchantId(),item.getCardBrand(),item.getCardLevel(),
+			transactionJdbcTemplate.update(sql,0,item.getTransactionId(),item.getTransactionType(),item.getMerchantId(),
+					item.getCardBrand(),item.getCardLevel(),
 					item.getCardNumber(),item.getCardType(),item.getPanLength(),item.getPaymentId(),item.isPinVerifiedFlag(),
-					item.getResponseCode(),item.getAid(),item.getAidname(),item.getRrn(),item.getTsi(),item.getTvr(),
+					item.getResponseCode(),item.getResponseMessage(),item.getCurrencyCode(),item.getSecureHash(),
+					item.getAid(),item.getAidname(),item.getRrn(),item.getTsi(),item.getTvr(),
 					item.getMerchantRefInvoiceNo(),item.isApproved(),item.getCardHolderName(),item.getAmount(),item.getStatus(),
-					item.getAuthCode(),item.getBankMerchantId(),item.getBankTerminalId(),item.getBatchNo(),item.getDate(),
+					item.getAuthCode(),item.getBankMerchantId(),item.getBankTerminalId(),item.getBatchNo(),item.getPaymentMethod(),
+					item.getPaymentBrand(),item.getPaymentMode(),item.getDate(),
 					item.getInvoiceNo(),item.getMerchantName(),item.getMerchantAddress(),item.getTc(),
 					item.getUserName(),item.getUserName());
 			
-			transactionJdbcTemplate.update(sqlPayStatus,item.getPayStatus(),item.getOrderId());
+			transactionJdbcTemplate.update(sqlPayStatus,item.getPayStatus(),item.getOrderNumber());
 			
-			/*dynamicShopJdbc.update(sql,0,item.getTransactionId(),item.getMerchantId(),item.getCardBrand(),item.getCardLevel(),
+			dynamicShopJdbc.update(sql,0,item.getTransactionId(),item.getTransactionType(),item.getMerchantId(),
+					item.getCardBrand(),item.getCardLevel(),
 					item.getCardNumber(),item.getCardType(),item.getPanLength(),item.getPaymentId(),item.isPinVerifiedFlag(),
-					item.getResponseCode(),item.getAid(),item.getAidname(),item.getRrn(),item.getTsi(),item.getTvr(),
+					item.getResponseCode(),item.getResponseMessage(),item.getCurrencyCode(),item.getSecureHash(),
+					item.getAid(),item.getAidname(),item.getRrn(),item.getTsi(),item.getTvr(),
 					item.getMerchantRefInvoiceNo(),item.isApproved(),item.getCardHolderName(),item.getAmount(),item.getStatus(),
-					item.getAuthCode(),item.getBankMerchantId(),item.getBankTerminalId(),item.getBatchNo(),item.getDate(),
-					item.getInvoiceNo(),item.getMerchantName(),item.getMerchantAddress(),item.getTc(),item.getUserName(),
-					item.getUserName());
+					item.getAuthCode(),item.getBankMerchantId(),item.getBankTerminalId(),item.getBatchNo(),item.getPaymentMethod(),
+					item.getPaymentBrand(),item.getPaymentMode(),item.getDate(),
+					item.getInvoiceNo(),item.getMerchantName(),item.getMerchantAddress(),item.getTc(),
+					item.getUserName(),item.getUserName());
 			
-			dynamicShopJdbc.update(sqlPayStatus,item.getPayStatus(),item.getOrderId());
+			dynamicShopJdbc.update(sqlPayStatus,item.getPayStatus(),item.getOrderNumber());
 			
-			if(item.getCustCode() != null && !item.getCustCode().equals("")) {
+			if(item.getUserCreateStatus() != null && !item.getUserCreateStatus().equals("S")) {
 				
 				sql="SELECT * FROM CUSTOMER_INFO where CUST_CODE = ?";
 				JdbcTemplate customerJdbc = daoConnection.getDynamicDataSource(DaoConnection.CUSTOMER_DB_NAME,
@@ -103,17 +116,20 @@ public class TransactionDao {
 				JdbcTemplate dynamicCustJdbc = daoConnection.getDynamicDataSource(customer.getDbName(),
 						item.getDbUserName(),item.getDbPassword());
 				
-				dynamicCustJdbc.update(sql,0,item.getTransactionId(),item.getMerchantId(),item.getCardBrand(),item.getCardLevel(),
+				dynamicCustJdbc.update(sql,0,item.getTransactionId(),item.getTransactionType(),item.getMerchantId(),
+						item.getCardBrand(),item.getCardLevel(),
 						item.getCardNumber(),item.getCardType(),item.getPanLength(),item.getPaymentId(),item.isPinVerifiedFlag(),
-						item.getResponseCode(),item.getAid(),item.getAidname(),item.getRrn(),item.getTsi(),item.getTvr(),
+						item.getResponseCode(),item.getResponseMessage(),item.getCurrencyCode(),item.getSecureHash(),
+						item.getAid(),item.getAidname(),item.getRrn(),item.getTsi(),item.getTvr(),
 						item.getMerchantRefInvoiceNo(),item.isApproved(),item.getCardHolderName(),item.getAmount(),item.getStatus(),
-						item.getAuthCode(),item.getBankMerchantId(),item.getBankTerminalId(),item.getBatchNo(),item.getDate(),
-						item.getInvoiceNo(),item.getMerchantName(),item.getMerchantAddress(),item.getTc(),item.getUserName(),
-						item.getUserName());
+						item.getAuthCode(),item.getBankMerchantId(),item.getBankTerminalId(),item.getBatchNo(),item.getPaymentMethod(),
+						item.getPaymentBrand(),item.getPaymentMode(),item.getDate(),
+						item.getInvoiceNo(),item.getMerchantName(),item.getMerchantAddress(),item.getTc(),
+						item.getUserName(),item.getUserName());
 				
-				dynamicCustJdbc.update(sqlPayStatus,item.getPayStatus(),item.getOrderId());
+				dynamicCustJdbc.update(sqlPayStatus,item.getPayStatus(),item.getOrderNumber());
 				
-			}*/
+			}
 			
 			
 			
@@ -129,6 +145,8 @@ public class TransactionDao {
 	
 	public String generateInvoice(Invoice item) {
 		String status = "failure";
+		JdbcTemplate transactionJdbcTemplate = daoConnection.getDynamicDataSource(DaoConnection.TRANS_DB_NAME,
+				item.getDbUserName(),item.getDbPassword());
 		JdbcTemplate dynamicShopJdbc = daoConnection.getDynamicDataSource(item.getDbName(),item.getDbUserName(),item.getDbPassword());
 		JdbcTemplate dynamicCustJdbc = null;
 		
@@ -266,10 +284,11 @@ public class TransactionDao {
 		
 		try {
 			
-			String sql = "SELECT im.* FROM INVOICE_MASTER as im,CUST_ORDER_DETAILS as cod WHERE im.INVM_TRANS_ID = cod.ORD_TRANS_ID AND"
-					+ " cod.ORD_ORD_ID = ? GROUP BY cod.ORD_ORD_ID";
+			String sql = "SELECT im.*,cp.* FROM INVOICE_MASTER as im,CUST_ORDER as co,CUST_ORDER_DETAILS as cod,cust_payment as cp "
+					+ "WHERE im.INVM_TRANS_ID = cod.ORD_TRANS_ID AND im.INVM_TRANS_ID = cp.PAYMENT_TRANSACTION_ID AND"
+					+ " cod.ORD_ORD_ID = co.ORD_ID AND co.ORD_NO = ? GROUP BY cod.ORD_ORD_ID";
 			
-			invoice = dynamicShopJdbc.query(sql, new InvoiceMapper(),item.getId()).get(0);
+			invoice = dynamicShopJdbc.query(sql, new InvoiceMapper(),item.getNumber()).get(0);
 			
 			sql = "SELECT * FROM INVOICE_DETAIL WHERE INVD_INVM_ID = ?";
 			itemList = dynamicShopJdbc.query(sql, new InvoiceDetailMapper(),invoice.getInvId());

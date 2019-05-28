@@ -142,7 +142,7 @@ private static final Logger log = LoggerFactory.getLogger(ShoppursApiController.
 		}
 		
 		
-		return status+"-"+orderId;
+		return status+"-"+orderNo;
 	}
 	
 	public String placeOrder(List<MyOrder> myOrderList) {
@@ -178,11 +178,12 @@ private static final Logger log = LoggerFactory.getLogger(ShoppursApiController.
 		for(MyOrder myorder : myOrderList) {
 			
 			 shopCode = DaoConnection.SHOPPURS_SHOP_CODE;
-			 
-			if(orderId == 0)
-			orderId = myorder.getOrderId();
 			
-			ordNum = shopCode+"-"+orderId;
+			
+			if(ordNum.equals(""))
+			ordNum = myorder.getOrderNumber();
+			
+			
 			if(dynamicShopJdbc == null)
 				dynamicShopJdbc = daoConnection.getDynamicDataSource(myorder.getDbName(),myorder.getDbUserName(),myorder.getDbPassword());
 			
@@ -196,15 +197,15 @@ private static final Logger log = LoggerFactory.getLogger(ShoppursApiController.
 			
 			
 				sql="INSERT INTO `CUST_ORDER`" + 
-						"(`ORD_ID`,`ORD_NO`,`ORD_DATE`,`ORD_DELIVERY_NOTE`,`ORD_DELIVERY_MODE`," + 
+						"(`ORD_NO`,`ORD_DATE`,`ORD_DELIVERY_NOTE`,`ORD_DELIVERY_MODE`," + 
 						"`ORD_PAYMENT_MODE`,`ORD_IMAGE`,"
 						+ "`ORD_CUST_CODE`,`ORD_CUST_NAME`," + 
 						"`ORD_CUST_MOBILE`,`ORD_DELIVERY_ADDRESS`," + 
 						"`ORD_PINCODE`,`ORD_TOTAL_QTY`,`ORD_TOTAL_AMT`,`ORD_COUPON_CODE`,`CREATED_BY`," + 
 						"`UPDATED_BY`,`CREATED_DATE`,`UPDATED_DATE`,`ORD_STATUS`) " + 
-						"VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,now(),now(),?)";
+						"VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,now(),now(),?)";
 				
-				dynamicShopJdbc.update(sql,orderId,ordNum,myorder.getOrderDate(),myorder.getOrderDeliveryNote(),
+				dynamicShopJdbc.update(sql,ordNum,myorder.getOrderDate(),myorder.getOrderDeliveryNote(),
 						myorder.getOrderDeliveryMode(),
 						myorder.getPaymentMode(),myorder.getOrderImage(),myorder.getCustCode(),
 						myorder.getCustName(),myorder.getMobileNo(),myorder.getDeliveryAddress(),myorder.getPinCode(),
@@ -212,7 +213,7 @@ private static final Logger log = LoggerFactory.getLogger(ShoppursApiController.
 						myorder.getOrdCouponId(),myorder.getCreatedBy(),
 						myorder.getUpdateBy(),myorder.getOrderStatus());
 				
-				dynamicShoppursShopJdbc.update(sql,orderId,ordNum,myorder.getOrderDate(),myorder.getOrderDeliveryNote(),
+				dynamicShoppursShopJdbc.update(sql,ordNum,myorder.getOrderDate(),myorder.getOrderDeliveryNote(),
 						myorder.getOrderDeliveryMode(),
 						myorder.getPaymentMode(),myorder.getOrderImage(),myorder.getCustCode(),
 						myorder.getCustName(),myorder.getMobileNo(),myorder.getDeliveryAddress(),myorder.getPinCode(),
@@ -220,7 +221,13 @@ private static final Logger log = LoggerFactory.getLogger(ShoppursApiController.
 						myorder.getOrdCouponId(),myorder.getCreatedBy(),
 						myorder.getUpdateBy(),myorder.getOrderStatus());
 				
-			
+				sql="SELECT MAX(ORD_ID) FROM CUST_ORDER";
+				int shopOrderId = dynamicShopJdbc.queryForObject(sql, Integer.class);
+				int ShoppursOrderId = dynamicShoppursShopJdbc.queryForObject(sql, Integer.class);
+				sql="SELECT ORD_ID FROM CUST_ORDER WHERE ORD_NO = ?";
+				orderId = transactionJdbcTemplate.queryForObject(sql, Integer.class,ordNum);
+				
+				
 			
 			myProductList = myorder.getMyProductList();
 			int qty = 0;
@@ -242,26 +249,28 @@ private static final Logger log = LoggerFactory.getLogger(ShoppursApiController.
 					myProduct = dynamicShoppursShopJdbc.query(sql,new com.shoppurs.customers.mapper.ProductMapper(),barCode).get(0);
 				}
 				
-				int ordId = 0;
+			/*	int ordId = 0;
 				if(barCode == null || barCode.equals("null") || barCode.equals("")) {
 					sql="SELECT ORD_ID FROM cust_order_details where PROD_ID = ? AND ORD_SHOP_CODE = ? AND ORD_ORD_ID = ?";
 					ordId = transactionJdbcTemplate.queryForObject(sql, Integer.class,myProduct.getProdId(),shopCode,orderId);
 				}else {
 					sql="SELECT ORD_ID FROM cust_order_details where PROD_BARCODE = ? AND ORD_SHOP_CODE = ? AND ORD_ORD_ID = ?";
 				    ordId = transactionJdbcTemplate.queryForObject(sql, Integer.class,barCode,shopCode,orderId);
-				}
+				}*/
 				
 				sql="UPDATE cust_order_details SET ORD_PAYMENT_STATUS = ? WHERE ORD_ORD_ID = ? AND ORD_SHOP_CODE = ?";
 				transactionJdbcTemplate.update(sql,myorder.getOderPaymentStatus(),orderId,shopCode);
 				
-				sql="INSERT INTO `cust_order_details`(`ORD_ID`,`ORD_ORD_ID`,`ORD_TRANS_ID`,`ORD_QTY`,`ORD_OFFER_ID`,`ORD_SHOP_CODE`,`ORD_SHOP_NAME`,"
+			
+				
+				sql="INSERT INTO `cust_order_details`(`ORD_ORD_ID`,`ORD_TRANS_ID`,`ORD_QTY`,`ORD_OFFER_ID`,`ORD_SHOP_CODE`,`ORD_SHOP_NAME`,"
 						+ "`ORD_SHOP_ADDRESS`,`ORD_SHOP_MOBILE`,`ORD_DELIVERY_MODE`,`ORD_STATUS`,`ORD_PAYMENT_STATUS`,"
 						+ "`PROD_NAME`,`PROD_BARCODE`," + 
 						"`PROD_DESC`,`PROD_MRP`,`PROD_SP`,`PROD_CGST`,`PROD_IGST`,`PROD_SGST`,`PROD_IMAGE_1`," + 
 						"`PROD_IMAGE_2`,`PROD_IMAGE_3`,`PROD_CODE`,`PROD_ID`,`IS_BARCODE_AVAILABLE`) "
-						+ "VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+						+ "VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 				
-				dynamicShopJdbc.update(sql,ordId,orderId,myorder.getTransactionId(),qty,myProduct.getOfferId(),shopCode,myShoppursShop.getRetshopname(),
+				dynamicShopJdbc.update(sql,shopOrderId,myorder.getTransactionId(),qty,myProduct.getOfferId(),shopCode,myShoppursShop.getRetshopname(),
 						myShoppursShop.getRetaddress(),myShoppursShop.getRetmobile(),myorder.getOrderDeliveryMode(),myorder.getOrderStatus(),
 						myorder.getOderPaymentStatus(),myProduct.getProdName(),barCode,
 						myProduct.getProdDesc(),myProduct.getProdMrp(),myProduct.getProdSp(),myProduct.getProdCgst(),
@@ -269,7 +278,7 @@ private static final Logger log = LoggerFactory.getLogger(ShoppursApiController.
 						myProduct.getProdImage3(),myProduct.getProdCode(),myProduct.getProdId(),myProduct.getIsBarcodeAvailable());
 				
 			
-				dynamicShoppursShopJdbc.update(sql,ordId,orderId,myorder.getTransactionId(),qty,myProduct.getOfferId(),shopCode,myShoppursShop.getRetshopname(),
+				dynamicShoppursShopJdbc.update(sql,ShoppursOrderId,myorder.getTransactionId(),qty,myProduct.getOfferId(),shopCode,myShoppursShop.getRetshopname(),
 						myShoppursShop.getRetaddress(),myShoppursShop.getRetmobile(),myorder.getOrderDeliveryMode(),myorder.getOrderStatus(),
 						myorder.getOderPaymentStatus(),myProduct.getProdName(),barCode,
 						myProduct.getProdDesc(),myProduct.getProdMrp(),myProduct.getProdSp(),myProduct.getProdCgst(),

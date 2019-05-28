@@ -3,10 +3,16 @@ package com.shoppurs.shop.model;
 public class UserID {
 
 	private int id,email,limit,offset;
-	private String mobile,code,dbName,dbPassword,dbUserName;
+	private String number,mobile,code,dbName,dbPassword,dbUserName;
 	
 	
 	
+	public String getNumber() {
+		return number;
+	}
+	public void setNumber(String number) {
+		this.number = number;
+	}
 	public String getCode() {
 		return code;
 	}

@@ -8,6 +8,8 @@ public class Invoice {
 	private String userName,custCode,custUserCreateStatus,invNo,invTransId,invDate,invShopCode,invShopName,invShopAddress,invShopEmail,invShopMobile,invShopGSTIn,
 	invCustName,invCustMobile,invStatus,invCoupenId,invPaymentMode,dbName,dbPassword,dbUserName;
 	
+	private String paymentMethod,paymentBrand;
+	
 	private float invTotCGST,invTotSGST,invTotIGST,invTotDisAmount,invTotTaxAmount,invTotAmount,invTotNetPayable;
 	
 	private List<InvoiceDetail> invoiceDetailList;
@@ -23,6 +25,24 @@ public class Invoice {
 	}
 	
 	
+
+	public String getPaymentMethod() {
+		return paymentMethod;
+	}
+
+	public void setPaymentMethod(String paymentMethod) {
+		this.paymentMethod = paymentMethod;
+	}
+
+	public String getPaymentBrand() {
+		return paymentBrand;
+	}
+
+	public void setPaymentBrand(String paymentBrand) {
+		this.paymentBrand = paymentBrand;
+	}
+
+
 
 	public String getCustUserCreateStatus() {
 		return custUserCreateStatus;

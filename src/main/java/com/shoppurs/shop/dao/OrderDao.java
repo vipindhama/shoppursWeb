@@ -392,7 +392,7 @@ public class OrderDao {
 			increament++;
 			
 			sql="SELECT ORD_ID FROM CUST_ORDER WHERE ORD_NO = ?";
-			orderId = dynamicShopJdbc.queryForObject(sql, Integer.class,orderNo);
+			orderId = transactionJdbcTemplate.queryForObject(sql, Integer.class,orderNo);
 			
 			
 			

@@ -3,14 +3,71 @@ package com.shoppurs.shop.model;
 public class MyPayment {
 	
 	private boolean pinVerifiedFlag,approved;
-	private String payStatus,userName,custCode,terminalId,merchantId,cardBrand,cardLevel,cardNumber,cardType,paymentId,responseCode,
+	private String responseMessage,secureHash,currencyCode,transactionType,paymentMethod,
+	paymentBrand,paymentMode,payStatus,userName,custCode,terminalId,merchantId,cardBrand,cardLevel,cardNumber,cardType,paymentId,responseCode,
 	                transactionId,aid,aidname,rrn,tsi,tvr,merchantRefInvoiceNo,status,authCode,bankMerchantId,bankTerminalId
-	                ,batchNo,cardHolderName,date,invoiceNo,merchantName,merchantAddress,time,tc,dbName,dbPassword,dbUserName;
+	                ,batchNo,cardHolderName,date,invoiceNo,merchantName,merchantAddress,time,tc,dbName,dbPassword,dbUserName,
+	                orderNumber,userCreateStatus;
 	private int id,orderId,panLength;
 	private float amount;
 	
 	
 	
+	public String getUserCreateStatus() {
+		return userCreateStatus;
+	}
+	public void setUserCreateStatus(String userCreateStatus) {
+		this.userCreateStatus = userCreateStatus;
+	}
+	public String getOrderNumber() {
+		return orderNumber;
+	}
+	public void setOrderNumber(String orderNumber) {
+		this.orderNumber = orderNumber;
+	}
+	
+	public String getResponseMessage() {
+		return responseMessage;
+	}
+	public void setResponseMessage(String responseMessage) {
+		this.responseMessage = responseMessage;
+	}
+	public String getSecureHash() {
+		return secureHash;
+	}
+	public void setSecureHash(String secureHash) {
+		this.secureHash = secureHash;
+	}
+	public String getCurrencyCode() {
+		return currencyCode;
+	}
+	public void setCurrencyCode(String currencyCode) {
+		this.currencyCode = currencyCode;
+	}
+	public String getTransactionType() {
+		return transactionType;
+	}
+	public void setTransactionType(String transactionType) {
+		this.transactionType = transactionType;
+	}
+	public String getPaymentMethod() {
+		return paymentMethod;
+	}
+	public void setPaymentMethod(String paymentMethod) {
+		this.paymentMethod = paymentMethod;
+	}
+	public String getPaymentBrand() {
+		return paymentBrand;
+	}
+	public void setPaymentBrand(String paymentBrand) {
+		this.paymentBrand = paymentBrand;
+	}
+	public String getPaymentMode() {
+		return paymentMode;
+	}
+	public void setPaymentMode(String paymentMode) {
+		this.paymentMode = paymentMode;
+	}
 	public String getPayStatus() {
 		return payStatus;
 	}

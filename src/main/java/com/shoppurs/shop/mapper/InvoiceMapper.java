@@ -38,6 +38,8 @@ public class InvoiceMapper implements RowMapper<Invoice>{
         invoice.setInvCoupenId(rs.getString("INVM_COUPEN_ID"));
         invoice.setInvPaymentMode(rs.getString("INVM_PAYMENT_MODE"));
         invoice.setUserName(rs.getString("CREATED_BY"));
+        invoice.setPaymentMethod(rs.getString("PAYMENT_PAYMENT_METHOD"));
+        invoice.setPaymentBrand(rs.getString("PAYMENT_PAYMENT_BRAND"));
         //invoice.setDbName(myorder.getDbName());
        // invoice.setDbUserName(myorder.getDbUserName());
        // invoice.setDbPassword(myorder.getDbPassword());
