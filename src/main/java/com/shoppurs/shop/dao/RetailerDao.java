@@ -374,9 +374,10 @@ public HashMap<String,Object> getShopSaleData(ShopSaleReq item) {
 public String buyUserLicense(UserLicense item) {
 	String status = "failure";	
 	JdbcTemplate dynamicJdbc = daoConnection.getDynamicDataSource(item.getDbName(),item.getDbUserName(),item.getDbPassword());
+	JdbcTemplate dynamicShopJdbc = daoConnection.getDynamicDataSource(DaoConnection.SHOP_DB_NAME,item.getDbUserName(),item.getDbPassword());
 	
 	   try {
-		   String sql="insert into RETAILER_MASTER (`UL_ID`," + 
+		   String sql="insert into USER_LICENSE (`UL_ID`," + 
 		   		"`UL_SHOP_CODE`," + 
 		   		"`UL_NO_OF_USER`," + 
 		   		"`UL_SCHEME`," + 
@@ -401,9 +402,10 @@ public String buyUserLicense(UserLicense item) {
 		   }
 		   String timeStamp=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(calendar.getTime());
 		   
-		   dynamicJdbc.update(sql, 0,item.getShopCode(),item.getNumOfUsers(),item.getScheme(),item.getAmount(),timeStamp,
+		   dynamicJdbc.update(sql,item.getShopCode(),item.getNumOfUsers(),item.getScheme(),item.getAmount(),timeStamp,
 				   item.getLicenseType(),item.getUserName(),item.getUserName());
-		   
+		   dynamicShopJdbc.update(sql,item.getShopCode(),item.getNumOfUsers(),item.getScheme(),item.getAmount(),timeStamp,
+				   item.getLicenseType(),item.getUserName(),item.getUserName());
 		   status = "success";
 	    	
 	   }catch(Exception e) {
