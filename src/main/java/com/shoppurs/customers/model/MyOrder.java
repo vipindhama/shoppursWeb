@@ -7,7 +7,7 @@ public class MyOrder {
 	private String transactionId,orderNumber, orderDate, orderDeliveryNote, orderDeliveryMode, paymentMode,
 	        orderDeliverBy,orderPaymentStatus,orderReason,ordCouponId,shopCode,shopName,shopMobile,shopAddress,
 	        custCode,custName,custUserCreateStatus,
-	        deliveryAddress, pinCode, 
+	        deliveryAddress, deliveryCountry,deliveryState,deliveryCity,pinCode, 
 	        createdBy, updateBy, createdDate, 
 			updatedDate, orderStatus,prodIds,orderImage,mobileNo,dbName,dbPassword,dbUserName;
 	
@@ -19,6 +19,24 @@ public class MyOrder {
 	
 	
 	
+	public String getDeliveryCountry() {
+		return deliveryCountry;
+	}
+	public void setDeliveryCountry(String deliveryCountry) {
+		this.deliveryCountry = deliveryCountry;
+	}
+	public String getDeliveryState() {
+		return deliveryState;
+	}
+	public void setDeliveryState(String deliveryState) {
+		this.deliveryState = deliveryState;
+	}
+	public String getDeliveryCity() {
+		return deliveryCity;
+	}
+	public void setDeliveryCity(String deliveryCity) {
+		this.deliveryCity = deliveryCity;
+	}
 	public String getCustUserCreateStatus() {
 		return custUserCreateStatus;
 	}

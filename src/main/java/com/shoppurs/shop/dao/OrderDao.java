@@ -79,15 +79,16 @@ public class OrderDao {
 							"(`ORD_NO`,`ORD_DATE`,`ORD_DELIVERY_NOTE`,`ORD_DELIVERY_MODE`," + 
 							"`ORD_PAYMENT_MODE`,`ORD_IMAGE`,"
 							+ "`ORD_CUST_CODE`,`ORD_CUST_NAME`," + 
-							"`ORD_CUST_MOBILE`,`ORD_DELIVERY_ADDRESS`," + 
+							"`ORD_CUST_MOBILE`,`ORD_DELIVERY_ADDRESS`,`ORD_DELIVERY_COUNTRY`,`ORD_DELIVERY_STATE`,`ORD_DELIVERY_CITY`," + 
 							"`ORD_PINCODE`,`ORD_TOTAL_QTY`,`ORD_TOTAL_AMT`,`ORD_COUPON_CODE`,`CREATED_BY`," + 
 							"`UPDATED_BY`,`CREATED_DATE`,`UPDATED_DATE`,`ORD_STATUS`) " + 
-							"VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,now(),now(),?)";
+							"VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,now(),now(),?)";
 					
 					transactionJdbcTemplate.update(sql,"",myorder.getOrderDate(),myorder.getOrderDeliveryNote(),
 							myorder.getOrderDeliveryMode(),
 							myorder.getPaymentMode(),myorder.getOrderImage(),myorder.getCustCode(),
-							myorder.getCustName(),myorder.getMobileNo(),myorder.getDeliveryAddress(),myorder.getPinCode(),
+							myorder.getCustName(),myorder.getMobileNo(),myorder.getDeliveryAddress(),
+							myorder.getDeliveryCountry(),myorder.getDeliveryState(),myorder.getDeliveryCity(),myorder.getPinCode(),
 							myorder.getTotalQuantity(),myorder.getToalAmount(),
 							myorder.getOrdCouponId(),myorder.getCreatedBy(),
 							myorder.getUpdateBy(),myorder.getOrderStatus());
@@ -355,15 +356,16 @@ public class OrderDao {
 						"(`ORD_NO`,`ORD_DATE`,`ORD_DELIVERY_NOTE`,`ORD_DELIVERY_MODE`," + 
 						"`ORD_PAYMENT_MODE`,`ORD_IMAGE`,"
 						+ "`ORD_CUST_CODE`,`ORD_CUST_NAME`," + 
-						"`ORD_CUST_MOBILE`,`ORD_DELIVERY_ADDRESS`," + 
+						"`ORD_CUST_MOBILE`,`ORD_DELIVERY_ADDRESS`,`ORD_DELIVERY_COUNTRY`,`ORD_DELIVERY_STATE`,`ORD_DELIVERY_CITY`," + 
 						"`ORD_PINCODE`,`ORD_TOTAL_QTY`,`ORD_TOTAL_AMT`,`ORD_COUPON_CODE`,`CREATED_BY`," + 
 						"`UPDATED_BY`,`CREATED_DATE`,`UPDATED_DATE`,`ORD_STATUS`) " + 
-						"VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,now(),now(),?)";
+						"VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,now(),now(),?)";
 				
 				dynamicShopJdbc.update(sql,orderNo,myorder.getOrderDate(),myorder.getOrderDeliveryNote(),
 						myorder.getOrderDeliveryMode(),
 						myorder.getPaymentMode(),myorder.getOrderImage(),myorder.getCustCode(),
-						myorder.getCustName(),myorder.getMobileNo(),myorder.getDeliveryAddress(),myorder.getPinCode(),
+						myorder.getCustName(),myorder.getMobileNo(),myorder.getDeliveryAddress(),
+						myorder.getDeliveryCountry(),myorder.getDeliveryState(),myorder.getDeliveryCity(),myorder.getPinCode(),
 						myorder.getTotalQuantity(),myorder.getToalAmount(),
 						myorder.getOrdCouponId(),myorder.getCreatedBy(),
 						myorder.getUpdateBy(),myorder.getOrderStatus());
@@ -377,15 +379,16 @@ public class OrderDao {
 							"(`ORD_NO`,`ORD_DATE`,`ORD_DELIVERY_NOTE`,`ORD_DELIVERY_MODE`," + 
 							"`ORD_PAYMENT_MODE`,`ORD_IMAGE`,"
 							+ "`ORD_CUST_CODE`,`ORD_CUST_NAME`," + 
-							"`ORD_CUST_MOBILE`,`ORD_DELIVERY_ADDRESS`," + 
+							"`ORD_CUST_MOBILE`,`ORD_DELIVERY_ADDRESS`,`ORD_DELIVERY_COUNTRY`,`ORD_DELIVERY_STATE`,`ORD_DELIVERY_CITY`," + 
 							"`ORD_PINCODE`,`ORD_TOTAL_QTY`,`ORD_TOTAL_AMT`,`ORD_COUPON_CODE`,`CREATED_BY`," + 
 							"`UPDATED_BY`,`CREATED_DATE`,`UPDATED_DATE`,`ORD_STATUS`) " + 
-							"VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,now(),now(),?)";
+							"VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,now(),now(),?)";
 					
 					dynamicCustJdbc.update(sql,orderNo,myorder.getOrderDate(),myorder.getOrderDeliveryNote(),
 							myorder.getOrderDeliveryMode(),
 							myorder.getPaymentMode(),myorder.getOrderImage(),myorder.getCustCode(),
-							myorder.getCustName(),myorder.getMobileNo(),myorder.getDeliveryAddress(),myorder.getPinCode(),
+							myorder.getCustName(),myorder.getMobileNo(),myorder.getDeliveryAddress(),
+							myorder.getDeliveryCountry(),myorder.getDeliveryState(),myorder.getDeliveryCity(),myorder.getPinCode(),
 							myorder.getTotalQuantity(),myorder.getToalAmount(),
 							myorder.getOrdCouponId(),myorder.getCreatedBy(),
 							myorder.getUpdateBy(),myorder.getOrderStatus());

@@ -3,8 +3,17 @@ package com.shoppurs.shop.model;
 public class UserLicense {
 
 	private int id,numOfUsers;
-	private String shopCode,scheme,purchaseDate,expiryDate,renewdDate,licenseType,userName,dbName,dbUserName,dbPassword;
+	private String shopCode,shopMobile,scheme,purchaseDate,expiryDate,renewdDate,licenseType,userName,dbName,dbUserName,dbPassword;
 	private float amount;
+	
+	
+	
+	public String getShopMobile() {
+		return shopMobile;
+	}
+	public void setShopMobile(String shopMobile) {
+		this.shopMobile = shopMobile;
+	}
 	public int getId() {
 		return id;
 	}

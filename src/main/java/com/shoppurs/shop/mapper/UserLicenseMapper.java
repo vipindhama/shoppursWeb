@@ -14,6 +14,7 @@ public class UserLicenseMapper implements RowMapper<UserLicense>{
 		UserLicense userLicense = new UserLicense();
 		userLicense.setId(rs.getInt("UL_ID"));
 		userLicense.setShopCode(rs.getString("UL_SHOP_CODE"));
+		userLicense.setShopMobile(rs.getString("UL_SHOP_MOBILE"));
 		userLicense.setNumOfUsers(rs.getInt("UL_NO_OF_USER"));
 		userLicense.setScheme(rs.getString("UL_SCHEME"));
 		userLicense.setAmount(rs.getFloat("UL_AMOUNT"));

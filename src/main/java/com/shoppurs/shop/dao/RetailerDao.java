@@ -379,6 +379,7 @@ public String buyUserLicense(UserLicense item) {
 	   try {
 		   String sql="insert into USER_LICENSE (`UL_ID`," + 
 		   		"`UL_SHOP_CODE`," + 
+		   		"`UL_SHOP_MOBILE`," + 
 		   		"`UL_NO_OF_USER`," + 
 		   		"`UL_SCHEME`," + 
 		   		"`UL_AMOUNT`," + 
@@ -390,21 +391,21 @@ public String buyUserLicense(UserLicense item) {
 		   		"`UPDATED_BY`," + 
 		   		"`CREATED_DATE`," + 
 		   		"`UPDATED_DATE`) values "
-	    			+ "(0,?,?,?,?,now(),now(),?,?,?,?,now(),now())";
+	    			+ "(0,?,?,?,?,?,now(),now(),?,?,?,?,now(),now())";
 		   
 		   Calendar calendar = Calendar.getInstance(Locale.getDefault());
-		   if(item.getScheme().equals("monthly")) {
+		   if(item.getScheme().equals("Monthly")) {
 			   calendar.add(Calendar.MONTH, 1);
-		   }else if(item.getScheme().equals("quarterly")) {
+		   }else if(item.getScheme().equals("Quarterly")) {
 			   calendar.add(Calendar.MONTH, 6); 
-		   }else if(item.getScheme().equals("yearly")) {
+		   }else if(item.getScheme().equals("Yearly")) {
 			   calendar.add(Calendar.YEAR, 1);
 		   }
 		   String timeStamp=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(calendar.getTime());
 		   
-		   dynamicJdbc.update(sql,item.getShopCode(),item.getNumOfUsers(),item.getScheme(),item.getAmount(),timeStamp,
+		   dynamicJdbc.update(sql,item.getShopCode(),item.getShopMobile(),item.getNumOfUsers(),item.getScheme(),item.getAmount(),timeStamp,
 				   item.getLicenseType(),item.getUserName(),item.getUserName());
-		   dynamicShopJdbc.update(sql,item.getShopCode(),item.getNumOfUsers(),item.getScheme(),item.getAmount(),timeStamp,
+		   dynamicShopJdbc.update(sql,item.getShopCode(),item.getShopMobile(),item.getNumOfUsers(),item.getScheme(),item.getAmount(),timeStamp,
 				   item.getLicenseType(),item.getUserName(),item.getUserName());
 		   status = "success";
 	    	
