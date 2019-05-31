@@ -122,6 +122,19 @@ public MyResponse createCouponOffer(@RequestBody Coupon item) {
 }
 
 
+//create product discount offers
+@RequestMapping("/api/offers/cupdate_product_discount_offer")
+public MyResponse updateProductDiscountOffer(@RequestBody ProductDiscountOffer item) {
+	ProductDiscountOffer response = offerDao.updateProductDiscountOffer(item);
+	if(response != null){
+		return generateResponse(true,"Offer updated succesfully.",response);	
+	}else {
+		return generateResponse(true,"There is some problem occurred in creating offer.",null);	
+	}
+	
+}
+
+
 private MyResponse generateResponse(boolean status,String message,Object data) {
 	MyResponse myResponse = new MyResponse();
 	myResponse.setStatus(status);

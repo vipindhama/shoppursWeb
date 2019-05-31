@@ -216,6 +216,8 @@ public class OfferDao {
 		
 	}
 	
+	
+	
 public ProductComboOffer createProductComboOffer(ProductComboOffer item) {
 		
 		JdbcTemplate jdbcTemplate = daoConnection.getDynamicDataSource(item.getDbName(),
@@ -376,6 +378,42 @@ public Coupon createCouponOffer(Coupon item) {
 		
 		
 	    sql="select max(COP_ID) from coupon_offer";
+	    item.setId(jdbcTemplate.queryForObject(sql, Integer.class));
+	    return item;
+		
+	}catch(Exception e) {
+		e.printStackTrace();
+		return null;	
+	}
+	
+}
+
+
+public ProductDiscountOffer updateProductDiscountOffer(ProductDiscountOffer item) {
+	
+	JdbcTemplate jdbcTemplate = daoConnection.getDynamicDataSource(item.getDbName(),
+			item.getDbUserName(),item.getDbPassword());
+	
+	try {
+		
+		String sql = "UPDATE `prod_disc_offer` SET " + 
+				"`PDO_NAME` = ?," + 
+				"`PDO_PRD_ID_BUY` = ?," + 
+				"`PDO_PRD_ID_FREE` = ?," + 
+				"`PDO_PRD_BUY_QTY` = ?," + 
+				"`PDO_PRD_FREE_QTY` = ?," + 
+				"`PDO_START_DATE` = ?," + 
+				"`PDO_END_DATE` = ?," + 
+				"`PDO_STATUS` = ?," + 
+				"`UPDATED_BY` = ?," + 
+				"`UPDATED_DATE` = now() WHERE PDO_ID = ?"; 
+				
+		
+		jdbcTemplate.update(sql,item.getOfferName(),item.getProdBuyId(),item.getProdFreeId(),item.getProdBuyQty(),
+				item.getProdFreeQty(),item.getStartDate(),item.getEndDate(),item.getStatus(),item.getUserName(),item.getId());
+		
+		
+	    sql="select max(PDO_ID) from prod_disc_offer";
 	    item.setId(jdbcTemplate.queryForObject(sql, Integer.class));
 	    return item;
 		
