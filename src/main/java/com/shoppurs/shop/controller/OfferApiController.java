@@ -12,8 +12,11 @@ import org.springframework.web.bind.annotation.RestController;
 import com.shoppurs.customers.model.MyResponse;
 import com.shoppurs.shop.dao.OfferDao;
 import com.shoppurs.shop.model.Category;
+import com.shoppurs.shop.model.Coupon;
 import com.shoppurs.shop.model.MyOffer;
 import com.shoppurs.shop.model.OfferMaster;
+import com.shoppurs.shop.model.ProductComboOffer;
+import com.shoppurs.shop.model.ProductDiscountOffer;
 import com.shoppurs.shop.model.UserID;
 
 @RestController("/api/offers")
@@ -29,6 +32,85 @@ private OfferDao offerDao;
 public MyResponse getMasterOffers(@RequestBody UserID item) {
 	List<OfferMaster> response = offerDao.getMasterOffers(item);
 	return generateResponse(true,"Offers fetched succesfully.",response);	
+}
+
+//Get product discount Offers
+@RequestMapping("/api/offers/get_product_discount_offer")
+public MyResponse getProductDiscountOffer(@RequestBody UserID item) {
+	List<ProductDiscountOffer> response = offerDao.getProductDiscountOffer(item);
+	return generateResponse(true,"Offers fetched succesfully.",response);	
+}
+
+//Get product combo Offers
+@RequestMapping("/api/offers/get_product_combo_offer")
+public MyResponse getProductComboOffer(@RequestBody UserID item) {
+	List<ProductComboOffer> response = offerDao.getProductComboOffer(item);
+	return generateResponse(true,"Offers fetched succesfully.",response);	
+}
+
+//Get product price Offers
+@RequestMapping("/api/offers/get_product_price_offer")
+public MyResponse getProductPriceOffer(@RequestBody UserID item) {
+	List<ProductComboOffer> response = offerDao.getProductPriceOffer(item);
+	return generateResponse(true,"Offers fetched succesfully.",response);	
+}
+
+
+//Get coupon Offers
+@RequestMapping("/api/offers/get_coupon_offer")
+public MyResponse getCouponOffers(@RequestBody UserID item) {
+	List<Coupon> response = offerDao.getCouponOffers(item);
+	return generateResponse(true,"Offers fetched succesfully.",response);	
+}
+
+//create product combo offers
+@RequestMapping("/api/offers/create_product_combo_offer")
+public MyResponse createProductComboOffer(@RequestBody ProductComboOffer item) {
+	ProductComboOffer response = offerDao.createProductComboOffer(item);
+	if(response != null){
+		return generateResponse(true,"Offer created succesfully.",response);	
+	}else {
+		return generateResponse(true,"There is some problem occurred in creating offer.",null);	
+	}
+	
+}
+
+//create product combo offers
+@RequestMapping("/api/offers/create_product_price_offer")
+public MyResponse createProductPriceOffer(@RequestBody ProductComboOffer item) {
+	ProductComboOffer response = offerDao.createProductPriceOffer(item);
+	if(response != null){
+		return generateResponse(true,"Offer created succesfully.",response);	
+	}else {
+		return generateResponse(true,"There is some problem occurred in creating offer.",null);	
+	}
+	
+}
+
+
+//create product discount offers
+@RequestMapping("/api/offers/create_product_discount_offer")
+public MyResponse createProductDiscountOffer(@RequestBody ProductDiscountOffer item) {
+	ProductDiscountOffer response = offerDao.createProductDiscountOffer(item);
+	if(response != null){
+		return generateResponse(true,"Offer created succesfully.",response);	
+	}else {
+		return generateResponse(true,"There is some problem occurred in creating offer.",null);	
+	}
+	
+}
+
+
+//create coupon offers
+@RequestMapping("/api/offers/create_coupon_offer")
+public MyResponse createCouponOffer(@RequestBody Coupon item) {
+	Coupon response = offerDao.createCouponOffer(item);
+	if(response != null){
+		return generateResponse(true,"Coupon offer created succesfully.",response);	
+	}else {
+		return generateResponse(true,"There is some problem occurred in creating offer.",null);	
+	}
+	
 }
 
 
