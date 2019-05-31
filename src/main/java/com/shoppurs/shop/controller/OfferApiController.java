@@ -123,7 +123,7 @@ public MyResponse createCouponOffer(@RequestBody Coupon item) {
 
 
 //create product discount offers
-@RequestMapping("/api/offers/cupdate_product_discount_offer")
+@RequestMapping("/api/offers/update_product_discount_offer")
 public MyResponse updateProductDiscountOffer(@RequestBody ProductDiscountOffer item) {
 	ProductDiscountOffer response = offerDao.updateProductDiscountOffer(item);
 	if(response != null){
