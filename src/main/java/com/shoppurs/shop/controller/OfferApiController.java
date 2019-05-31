@@ -1,6 +1,7 @@
 package com.shoppurs.shop.controller;
 
 import java.util.List;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,6 +27,13 @@ public class OfferApiController {
 
 @Autowired
 private OfferDao offerDao;
+
+//Get Shoppurs Master Offers
+@RequestMapping("/api/offers/get_offer_list")
+public MyResponse getAllOffers(@RequestBody UserID item) {
+	Map<String,Object> response = offerDao.getAllOffers(item);
+	return generateResponse(true,"Offers fetched succesfully.",response);	
+}
 
 //Get Shoppurs Master Offers
 @RequestMapping("/api/offers/get_master_offers")

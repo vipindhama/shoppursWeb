@@ -5,7 +5,9 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -58,6 +60,18 @@ public class OfferDao {
 		
 		
 		return offerMasterList;
+		
+	}
+	
+	public Map<String,Object> getAllOffers(UserID item) {
+		JdbcTemplate jdbcTemplate = daoConnection.getDynamicDataSource(item.getDbName(),
+				item.getDbUserName(),item.getDbPassword());
+		
+		Map<String,Object> map = new HashMap();
+		map.put("freeOfferList",getProductDiscountOffer(item));
+		map.put("comboOfferList",getProductComboOffer(item));
+		map.put("priceOfferList",getProductPriceOffer(item));
+		return map;
 		
 	}
 	
